@@ -12,3 +12,13 @@
     
 }
 
+nav {
+  background-color: #3079A7;
+}
+
+.modalItemTypes {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  width: 50%;
+}
+
