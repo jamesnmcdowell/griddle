@@ -296,3 +296,159 @@ var placeFirst = function(element) {
   var firstCard = itemsContainer.querySelector('div')
   itemsContainer.insertBefore(element, firstCard)
 }
+
+//#####################
+
+//################
+
+// var closeModal = function() {
+//   var body = document.querySelector('body')
+// }
+
+// modals.addEventListener('click', function(e) {
+//   if (e.target.id = 'add-img') {
+
+//   }
+//   else if (e.target.id = 'add-txt') {
+//     createDiv
+//     createInputForm
+//     add button submit
+//     add button cancel
+//     append input to div
+//     append div to modal 
+//     positon fixed
+
+
+//   }
+// })
+
+var addListModal = document.querySelector('#add-list');
+
+addListModal.addEventListener('click', function() {
+  var arrDOMElements = []
+
+  var divWrapper = document.createElement('div')
+  var divForm = document.createElement('div');
+  divForm.className = "list-form";
+
+  var ul = document.createElement('ul')
+  ul.className = 'bulletpoints'
+  var li = document.createElement('li');
+
+  var titleInput = createTitleInput();
+  divForm.appendChild(titleInput);
+  
+
+  // var bullet = createImageForm();
+  var bullet = createBulletInput();
+  li.appendChild(bullet)
+  ul.appendChild(li);
+  divForm.appendChild(ul);
+  arrDOMElements.push(bullet);
+
+  var divButtons = document.createElement('div');
+  divButtons.className = 'buttons';
+  var buttonAdd = createAddBtn();
+  var buttonCancel = createCancelBtn();
+  divButtons.appendChild(buttonAdd);
+  divButtons.appendChild(buttonCancel);
+
+  divWrapper.appendChild(divForm);
+  divWrapper.appendChild(divButtons);
+  divModalContent.appendChild(divWrapper);
+
+
+  divForm.addEventListener('keydown', function(e) {
+    if(e.keyCode === 13 && e.target.className === 'title-input') {
+      bullet.focus();
+    }
+    if(e.keyCode === 13 && e.target.className === 'bullet-point') {
+      console.log(e)
+      e.preventDefault();
+      
+      var li = document.createElement('li');
+
+      var newBullet = createBulletInput();
+      li.appendChild(newBullet)
+      ul.appendChild(li);
+      newBullet.focus();
+      arrDOMElements.push(newBullet);
+
+      
+
+      // divForm.appendChild(newDiv);
+    }
+  })
+
+
+  buttonAdd.addEventListener('click', function() {
+    var listContent = [];
+    for (var i = 0; i < arrDOMElements.length; i ++) {
+      listContent.push(arrDOMElements[i].value)
+    }
+    
+    var listObj = {
+      type: "list",
+      title: titleInput.value,
+      content: listContent
+
+    }
+
+    itemsArr.push(listObj);
+
+    var cardObj = createCard(listObj);
+    // var image = document.createElement('img');
+    // image.setAttribute('src', imgObj.content);
+    // image.style.maxWidth = '90%';
+    // image.style.maxHeight = '80%';
+
+    console.log(listContent)
+    var contentEl = cardObj.card.querySelector('ul')
+    contentEl.className = 'bulletpoints card-bullets'
+
+    contentEl.innerHTML = '';
+    for (var j = 0; j < listContent.length; j ++) {
+      var li = document.createElement('li');
+      if (listContent[j] !== '')  {
+        li.textContent = listContent[j];
+        contentEl.appendChild(li);
+      }
+      // console.log(typeof listContent[j])
+      
+
+    }
+
+    // cardObj.card.querySelector('ul').appendChild(image);
+    // console.log(cardObj.card.querySelector('ul').innerHTML)
+
+    placeFirst(cardObj.card);
+   
+
+    deleteElement(divWrapper);
+    closeModal.click();
+  })
+
+  buttonCancel.addEventListener('click', function(){
+  deleteElement(divWrapper);
+  })
+  
+})
+
+
+var createBulletInput = function() {
+  
+  
+  var input = document.createElement('input');
+  // input.setAttribute('type', 'checkbox')
+  // input.setAttribute('id', 'bullet-point');
+  input.setAttribute('name', 'bulletPoint');
+  input.setAttribute('placeholder', 'Add...')
+  input.className = 'bullet-point';
+
+  // imageForm.appendChild(input);
+  // // imageForm.appendChild(label);
+  // divForm.appendChild(imageForm);
+
+  return input;
+}
+
