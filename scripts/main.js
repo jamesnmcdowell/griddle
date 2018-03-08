@@ -120,6 +120,8 @@ $(document).ready(function(){
 //########################
 var divModalContent = document.querySelector('div.modal-content');
 
+var closeModal = document.querySelector('div.modal-footer>a')
+
 var addImageModal = document.querySelector('#add-image');
 
 addImageModal.addEventListener('click', function() {
@@ -137,15 +139,15 @@ addImageModal.addEventListener('click', function() {
       title: 'Hello world',
       content: url
     }
-
-    
+ 
     itemsArr.push(imgObj);
-    //render(itemsArr)
-    //might not be effective in terms of performance?
 
     var cardObj = createCard(imgObj);
     var image = document.createElement('img');
     image.setAttribute('src', imgObj.content);
+    image.style.maxWidth = '90%';
+    image.style.maxHeight = '80%';
+
     
    
     cardObj.card.querySelector('ul').innerHTML = '';
@@ -153,8 +155,11 @@ addImageModal.addEventListener('click', function() {
     itemsContainer.appendChild(cardObj.card);
 
     deleteElement(divForm);
+    closeModal.click();
 
   })
+
+
   
   buttonCancel.addEventListener('click', function(){
     deleteElement(divForm);
@@ -185,21 +190,16 @@ addTextModal.addEventListener('click', function() {
       title: 'Hello world',
       content: text
     }
-
-    
+  
     itemsArr.push(textObj);
-    //render(itemsArr)
-    //might not be effective in terms of performance?
 
     var cardObj = createCard(textObj);
-    
-    
-   
+
     cardObj.card.querySelector('ul').textContent = text;
     itemsContainer.appendChild(cardObj.card);
 
     deleteElement(divForm);
-
+    closeModal.click();
   })
   
   buttonCancel.addEventListener('click', function(){
@@ -252,16 +252,13 @@ var createImageForm = function() {
   input.className = 'url-image-form';
 
   imageForm.appendChild(input);
-  // imageForm.appendChild(label);
   divForm.appendChild(imageForm);
 
   return divForm;
-  
 }
 
 var createAddBtn = function() {
   var submitButton = document.createElement('button');
-  // submitButton.setAttribute('type', 'button');
   submitButton.textContent = 'Add';
   submitButton.className = 'cancel-submit-btn'
   return submitButton;
@@ -269,89 +266,8 @@ var createAddBtn = function() {
 
 var createCancelBtn = function() {
   var cancelButton = document.createElement('button');
-  // cancelButton.setAttribute('type', 'button');
   cancelButton.textContent = 'Cancel';
   cancelButton.className = 'cancel-submit-btn';
   return cancelButton;
 }
 
-// var closeModal = function() {
-//   var body = document.querySelector('body')
-// }
-
-// modals.addEventListener('click', function(e) {
-//   if (e.target.id = 'add-img') {
-
-//   }
-//   else if (e.target.id = 'add-txt') {
-//     createDiv
-//     createInputForm
-//     add button submit
-//     add button cancel
-//     append input to div
-//     append div to modal 
-//     positon fixed
-
-
-//   }
-// })
-
-var addListModal = document.querySelector('#add-list');
-
-addListModal.addEventListener('click', function() {
-  var divForm = document.createElement('div');
-  divForm.className = "list-form";
-
-  var ul = document.createElement('ul')
-  var li = document.createElement('li');
-
-  // var bullet = createImageForm();
-  var bullet = createBulletInput();
-  li.appendChild(bullet)
-  ul.appendChild(li);
-  divForm.appendChild(ul);
-
-  var divButtons = document.createElement('div');
-  divButtons.className = 'buttons';
-  var buttonAdd = createAddBtn();
-  var buttonCancel = createCancelBtn();
-  divButtons.appendChild(buttonAdd);
-  divButtons.appendChild(buttonCancel);
-  divModalContent.appendChild(divForm);
-  divModalContent.appendChild(divButtons);
-
-
-  divForm.addEventListener('keydown', function(e) {
-    if(e.keyCode === 13) {
-      e.preventDefault();
-      console.log('enter')
-      var li = document.createElement('li');
-
-      var bullet = createBulletInput();
-      li.appendChild(bullet)
-      ul.appendChild(li);
-
-      // divForm.appendChild(newDiv);
-    }
-  })
-
-
-  
-})
-
-
-var createBulletInput = function() {
-  
-  
-  var input = document.createElement('input');
-  // input.setAttribute('id', 'bullet-point');
-  input.setAttribute('name', 'bulletPoint');
-  input.setAttribute('placeholder', 'Add...')
-  input.className = 'bullet-point';
-
-  // imageForm.appendChild(input);
-  // // imageForm.appendChild(label);
-  // divForm.appendChild(imageForm);
-
-  return input;
-}
