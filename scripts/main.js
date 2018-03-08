@@ -126,6 +126,7 @@ addImageModal.addEventListener('click', function() {
 
   var divForm = createImageForm();
   var buttonAdd = createAddBtn();
+  var buttonCancel = createCancelBtn();
 
   buttonAdd.addEventListener('click', function() {
     var imageForm = document.querySelector('form')
@@ -145,41 +146,94 @@ addImageModal.addEventListener('click', function() {
     var cardObj = createCard(imgObj);
     var image = document.createElement('img');
     image.setAttribute('src', imgObj.content);
-    // console.log(cardObj.querySelector('ul'))
-    console.log(image)
+    
+   
     cardObj.card.querySelector('ul').innerHTML = '';
     cardObj.card.querySelector('ul').appendChild(image);
     itemsContainer.appendChild(cardObj.card);
 
+    deleteElement(divForm);
+
   })
-
-
-
-
-
-  var createImageCard = function(imgObj) {
-
-  }
-
-  var buttonCancel = createCancelBtn();
+  
   buttonCancel.addEventListener('click', function(){
-    deleteElement(divForm)
+    deleteElement(divForm);
   })
 
   
   divForm.appendChild(buttonAdd);
   divForm.appendChild(buttonCancel);
   divModalContent.appendChild(divForm);
-
-  // divModalContent.appendChild(buttonAdd);
-  // divModalContent.appendChild(buttonCancel);
-
-  
-
-  
-
  
 })
+
+///#####################
+var addTextModal = document.querySelector('#add-text');
+
+addTextModal.addEventListener('click', function() {
+
+  var divForm = createTextForm();
+  var buttonAdd = createAddBtn();
+  var buttonCancel = createCancelBtn();
+
+  buttonAdd.addEventListener('click', function() {
+    var textForm = document.querySelector('form')
+    var text = textForm.addText.value;
+    
+    var textObj = {
+      type: 'text',
+      title: 'Hello world',
+      content: text
+    }
+
+    
+    itemsArr.push(textObj);
+    //render(itemsArr)
+    //might not be effective in terms of performance?
+
+    var cardObj = createCard(textObj);
+    
+    
+   
+    cardObj.card.querySelector('ul').textContent = text;
+    itemsContainer.appendChild(cardObj.card);
+
+    deleteElement(divForm);
+
+  })
+  
+  buttonCancel.addEventListener('click', function(){
+    deleteElement(divForm);
+  })
+
+  
+  divForm.appendChild(buttonAdd);
+  divForm.appendChild(buttonCancel);
+  divModalContent.appendChild(divForm);
+ 
+})
+
+var createTextForm = function() {
+  var divForm = document.createElement('div');
+  divForm.className = 'div-form';
+  var textForm = document.createElement('form');
+  
+  var input = document.createElement('input');
+  input.setAttribute('id', 'text-form');
+  input.setAttribute('name', 'addText');
+  input.setAttribute('placeholder', 'Type some text...')
+  input.className = 'text-form';
+
+  textForm.appendChild(input);
+  // imageForm.appendChild(label);
+  divForm.appendChild(textForm);
+
+  return divForm;
+  
+}
+
+//######################
+
 
 var deleteElement = function(element) {
   element.outerHTML = "";
@@ -197,11 +251,6 @@ var createImageForm = function() {
   input.setAttribute('placeholder', 'Enter url here...')
   input.className = 'url-image-form';
 
-  // var label = document.createElement('label');
-  // label.setAttribute('for', 'url-form');
-  // label.textContent = "add image url";
-
-  
   imageForm.appendChild(input);
   // imageForm.appendChild(label);
   divForm.appendChild(imageForm);
@@ -212,7 +261,7 @@ var createImageForm = function() {
 
 var createAddBtn = function() {
   var submitButton = document.createElement('button');
-  submitButton.setAttribute('type', 'button');
+  // submitButton.setAttribute('type', 'button');
   submitButton.textContent = 'Add';
   submitButton.className = 'cancel-submit-btn'
   return submitButton;
@@ -220,13 +269,15 @@ var createAddBtn = function() {
 
 var createCancelBtn = function() {
   var cancelButton = document.createElement('button');
-  cancelButton.setAttribute('type', 'cancel');
+  // cancelButton.setAttribute('type', 'button');
   cancelButton.textContent = 'Cancel';
   cancelButton.className = 'cancel-submit-btn';
   return cancelButton;
 }
 
-
+// var closeModal = function() {
+//   var body = document.querySelector('body')
+// }
 
 // modals.addEventListener('click', function(e) {
 //   if (e.target.id = 'add-img') {
@@ -244,3 +295,63 @@ var createCancelBtn = function() {
 
 //   }
 // })
+
+var addListModal = document.querySelector('#add-list');
+
+addListModal.addEventListener('click', function() {
+  var divForm = document.createElement('div');
+  divForm.className = "list-form";
+
+  var ul = document.createElement('ul')
+  var li = document.createElement('li');
+
+  // var bullet = createImageForm();
+  var bullet = createBulletInput();
+  li.appendChild(bullet)
+  ul.appendChild(li);
+  divForm.appendChild(ul);
+
+  var divButtons = document.createElement('div');
+  divButtons.className = 'buttons';
+  var buttonAdd = createAddBtn();
+  var buttonCancel = createCancelBtn();
+  divButtons.appendChild(buttonAdd);
+  divButtons.appendChild(buttonCancel);
+  divModalContent.appendChild(divForm);
+  divModalContent.appendChild(divButtons);
+
+
+  divForm.addEventListener('keydown', function(e) {
+    if(e.keyCode === 13) {
+      e.preventDefault();
+      console.log('enter')
+      var li = document.createElement('li');
+
+      var bullet = createBulletInput();
+      li.appendChild(bullet)
+      ul.appendChild(li);
+
+      // divForm.appendChild(newDiv);
+    }
+  })
+
+
+  
+})
+
+
+var createBulletInput = function() {
+  
+  
+  var input = document.createElement('input');
+  // input.setAttribute('id', 'bullet-point');
+  input.setAttribute('name', 'bulletPoint');
+  input.setAttribute('placeholder', 'Add...')
+  input.className = 'bullet-point';
+
+  // imageForm.appendChild(input);
+  // // imageForm.appendChild(label);
+  // divForm.appendChild(imageForm);
+
+  return input;
+}
