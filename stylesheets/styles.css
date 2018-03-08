@@ -68,3 +68,14 @@ input {
   background-color: #ff4f4f;
 }
 
+.twitter-blue {
+  background-color: #00aced;
+}
+
+.failure-call {
+  background-color: #ed002a;
+}
+
+.card-action a:hover {
+  cursor: pointer;
+}
