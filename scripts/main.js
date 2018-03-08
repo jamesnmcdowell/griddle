@@ -46,8 +46,9 @@ let createCard = function(itemObj) {
   cardTitle.textContent = itemObj.title;
   cardContentInner.textContent = itemObj.content;
   cardAction1.textContent = `Delay`;
-  cardAction2.textContent = "Prioritize";
+  cardAction2.textContent = "Tweet";
   cardAction3.textContent = "Delete";
+  cardAction2.addEventListener('click', tweet);
 
   let cardObj = {
     card: cardWrapperDiv,
@@ -133,6 +134,7 @@ addImageModal.addEventListener('click', function() {
   buttonAdd.addEventListener('click', function() {
     var imageForm = document.querySelector('form')
     var url = imageForm.imageUrl.value;
+
     var title = imageForm.addTitle.value;
     
     var imgObj = {
@@ -140,7 +142,7 @@ addImageModal.addEventListener('click', function() {
       title: title,
       content: url
     }
- 
+
     itemsArr.push(imgObj);
 
     var cardObj = createCard(imgObj);
@@ -149,8 +151,8 @@ addImageModal.addEventListener('click', function() {
     image.style.maxWidth = '90%';
     image.style.maxHeight = '80%';
 
-    
-   
+
+
     cardObj.card.querySelector('ul').innerHTML = '';
     cardObj.card.querySelector('ul').appendChild(image);
 
@@ -163,16 +165,16 @@ addImageModal.addEventListener('click', function() {
   })
 
 
-  
+
   buttonCancel.addEventListener('click', function(){
     deleteElement(divForm);
   })
 
-  
+
   divForm.appendChild(buttonAdd);
   divForm.appendChild(buttonCancel);
   divModalContent.appendChild(divForm);
- 
+
 })
 
 ///#####################
@@ -187,6 +189,7 @@ addTextModal.addEventListener('click', function() {
   buttonAdd.addEventListener('click', function() {
     var textForm = document.querySelector('form')
     var text = textForm.addText.value;
+
     var title = textForm.addTitle.value;
     
     
@@ -195,7 +198,7 @@ addTextModal.addEventListener('click', function() {
       title: title,
       content: text
     }
-  
+
     itemsArr.push(textObj);
 
     var cardObj = createCard(textObj);
@@ -207,24 +210,31 @@ addTextModal.addEventListener('click', function() {
     deleteElement(divForm);
     closeModal.click();
   })
-  
+
   buttonCancel.addEventListener('click', function(){
     deleteElement(divForm);
   })
 
-  
+
   divForm.appendChild(buttonAdd);
   divForm.appendChild(buttonCancel);
   divModalContent.appendChild(divForm);
 
- 
- 
+
 })
 
 var createTextForm = function() {
   var divForm = document.createElement('div');
   divForm.className = 'div-form';
   var textForm = document.createElement('form');
+
+
+  var input = document.createElement('input');
+  input.setAttribute('id', 'text-form');
+  input.setAttribute('name', 'addText');
+  input.setAttribute('placeholder', 'Type some text...')
+  input.className = 'text-form';
+
   
   var textArea = document.createElement('textarea');
   textArea.setAttribute('id', 'text-form');
@@ -233,6 +243,7 @@ var createTextForm = function() {
   textArea.className = 'text-form';
 
   var titleArea = createTitleInput()
+
 
   textForm.appendChild(titleArea);
   textForm.appendChild(textArea);
@@ -262,7 +273,7 @@ var createImageForm = function() {
   var divForm = document.createElement('div');
   divForm.className = 'div-form';
   var imageForm = document.createElement('form');
-  
+
   var input = document.createElement('input');
   input.setAttribute('id', 'url-form');
   input.setAttribute('name', 'imageUrl');
@@ -292,7 +303,9 @@ var createCancelBtn = function() {
   return cancelButton;
 }
 
+
 var placeFirst = function(element) {
   var firstCard = itemsContainer.querySelector('div')
   itemsContainer.insertBefore(element, firstCard)
 }
+
