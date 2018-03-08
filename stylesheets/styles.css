@@ -68,6 +68,19 @@ input {
   background-color: #ff4f4f;
 }
 
+
+.twitter-blue {
+  background-color: #00aced;
+}
+
+.failure-call {
+  background-color: #ed002a;
+}
+
+.card-action a:hover {
+  cursor: pointer;
+}
+
 ul.bulletpoints > li {
   list-style-type: disc;
   margin-left: 3%;
@@ -76,3 +89,4 @@ ul.bulletpoints > li {
 .card-bullets {
   margin-left: 5%
 }
+
