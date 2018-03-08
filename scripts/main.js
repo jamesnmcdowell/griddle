@@ -135,9 +135,11 @@ addImageModal.addEventListener('click', function() {
     var imageForm = document.querySelector('form')
     var url = imageForm.imageUrl.value;
 
+    var title = imageForm.addTitle.value;
+    
     var imgObj = {
       type: 'image',
-      title: 'Hello world',
+      title: title,
       content: url
     }
 
@@ -153,7 +155,9 @@ addImageModal.addEventListener('click', function() {
 
     cardObj.card.querySelector('ul').innerHTML = '';
     cardObj.card.querySelector('ul').appendChild(image);
-    itemsContainer.appendChild(cardObj.card);
+
+    placeFirst(cardObj.card);
+   
 
     deleteElement(divForm);
     closeModal.click();
@@ -186,9 +190,12 @@ addTextModal.addEventListener('click', function() {
     var textForm = document.querySelector('form')
     var text = textForm.addText.value;
 
+    var title = textForm.addTitle.value;
+    
+    
     var textObj = {
       type: 'text',
-      title: 'Hello world',
+      title: title,
       content: text
     }
 
@@ -197,7 +204,8 @@ addTextModal.addEventListener('click', function() {
     var cardObj = createCard(textObj);
 
     cardObj.card.querySelector('ul').textContent = text;
-    itemsContainer.appendChild(cardObj.card);
+
+    placeFirst(cardObj.card);
 
     deleteElement(divForm);
     closeModal.click();
@@ -212,6 +220,7 @@ addTextModal.addEventListener('click', function() {
   divForm.appendChild(buttonCancel);
   divModalContent.appendChild(divForm);
 
+
 })
 
 var createTextForm = function() {
@@ -219,14 +228,25 @@ var createTextForm = function() {
   divForm.className = 'div-form';
   var textForm = document.createElement('form');
 
+
   var input = document.createElement('input');
   input.setAttribute('id', 'text-form');
   input.setAttribute('name', 'addText');
   input.setAttribute('placeholder', 'Type some text...')
   input.className = 'text-form';
 
-  textForm.appendChild(input);
-  // imageForm.appendChild(label);
+  
+  var textArea = document.createElement('textarea');
+  textArea.setAttribute('id', 'text-form');
+  textArea.setAttribute('name', 'addText');
+  textArea.setAttribute('placeholder', 'Type some text...')
+  textArea.className = 'text-form';
+
+  var titleArea = createTitleInput()
+
+
+  textForm.appendChild(titleArea);
+  textForm.appendChild(textArea);
   divForm.appendChild(textForm);
 
   return divForm;
@@ -234,6 +254,14 @@ var createTextForm = function() {
 }
 
 //######################
+
+var createTitleInput = function() {
+  var titleInput = document.createElement('input');
+  titleInput.setAttribute('name', 'addTitle');
+  titleInput.setAttribute('placeholder', 'Add title...');
+  titleInput.className = 'title-input';
+  return titleInput;
+}
 
 
 var deleteElement = function(element) {
@@ -252,6 +280,9 @@ var createImageForm = function() {
   input.setAttribute('placeholder', 'Enter url here...')
   input.className = 'url-image-form';
 
+  var titleArea = createTitleInput()
+
+  imageForm.appendChild(titleArea);
   imageForm.appendChild(input);
   divForm.appendChild(imageForm);
 
@@ -271,3 +302,10 @@ var createCancelBtn = function() {
   cancelButton.className = 'cancel-submit-btn';
   return cancelButton;
 }
+
+
+var placeFirst = function(element) {
+  var firstCard = itemsContainer.querySelector('div')
+  itemsContainer.insertBefore(element, firstCard)
+}
+

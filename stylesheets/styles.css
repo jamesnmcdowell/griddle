@@ -59,6 +59,7 @@ input {
     border-top: grey;
 }
 
+
 .btn {
   background-color: #ff6c6c;
 }
@@ -66,3 +67,4 @@ input {
 .btn:hover {
   background-color: #ff4f4f;
 }
+
