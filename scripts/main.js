@@ -1,19 +1,49 @@
 let itemsContainer = document.querySelector('.items-container');
 
 document.addEventListener('DOMContentLoaded', function (event) {
-  render(itemsArr);
+  getData().then(render); 
 });
+
+function testfunc() {
+  console.log('you added something!');
+}
+
+let getData = function() {
+  let firebaseArr = [];
+  let firebaseRef = firebase.database().ref();
+  return firebaseRef.once('value').then(function(snapshot) {
+    let firebaseObj = snapshot.val();
+    for (key in firebaseObj) {
+      firebaseObj[key]["id"] = key;
+      firebaseArr.push(firebaseObj[key]);
+    }
+    return firebaseArr;
+  })
+
+};
+
+let writeData = function(testObj) {
+  return firebase.database().ref().push().set({
+    title: testObj.title,
+    content: testObj.content,
+    type: testObj.type
+  }).then( function () {
+    
+  });
+};
 
 let render = function(itemsArr) {
   itemsArr.forEach( function(card, i)  {
     let cardObj = createCard(card);
     itemsContainer.appendChild(cardObj.card);
+    
 
     cardObj.cta3.addEventListener('click', function(event) {
       cardObj.card.remove();
     });
   })
 };
+
 
 let createCard = function(itemObj) {
   let cardDiv = document.createElement('div');
@@ -60,56 +90,6 @@ let createCard = function(itemObj) {
   return cardObj;
 };
 
-let itemsArr = [
-  {
-    title: "Cool title",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam."
-  },
-   {
-    title: "Cool title",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam."
-  },
-   {
-    title: "Cool title",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam."
-  },
-   {
-    title: "Cool title",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam."
-  },
-   {
-    title: "Cool title",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam."
-  },
-   {
-    title: "Cool title",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam."
-  },
-   {
-    title: "Cool title",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam."
-  },
-   {
-    title: "Cool title",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam."
-  },
-   {
-    title: "Cool title",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam."
-  },
-  {
-    title: "Cool title",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam."
-  },
-  {
-    title: "Cool title",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam."
-  },
-  {
-    title: "Cool title",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam."
-  }
-];
 
 $(document).ready(function(){
   // the "href" attribute of the modal trigger must specify the modal ID that wants to be triggered
@@ -142,8 +122,8 @@ addImageModal.addEventListener('click', function() {
       title: title,
       content: url
     }
-
-    itemsArr.push(imgObj);
+    
+    writeData(imgObj).then(testfunc);
 
     var cardObj = createCard(imgObj);
     var image = document.createElement('img');
@@ -199,8 +179,8 @@ addTextModal.addEventListener('click', function() {
       content: text
     }
 
-    itemsArr.push(textObj);
-
+    writeData(textObj).then(testfunc);
+    
     var cardObj = createCard(textObj);
 
     cardObj.card.querySelector('ul').textContent = text;
@@ -308,4 +288,111 @@ var placeFirst = function(element) {
   var firstCard = itemsContainer.querySelector('div')
   itemsContainer.insertBefore(element, firstCard)
 }
+
+//#####################
+
+var addListModal = document.querySelector('#add-list');
+
+addListModal.addEventListener('click', function() {
+  var arrDOMElements = []
+
+  var divWrapper = document.createElement('div');
+  var divForm = document.createElement('div');
+  divForm.className = "list-form";
+
+  var ul = document.createElement('ul')
+  ul.className = 'bulletpoints';
+
+  var li = document.createElement('li');
+  var bullet = createBulletInput();
+  arrDOMElements.push(bullet);
+
+  var titleInput = createTitleInput();
+
+  divForm.appendChild(titleInput);
+  li.appendChild(bullet)
+  ul.appendChild(li);
+  divForm.appendChild(ul);
+
+  var divButtons = document.createElement('div');
+  divButtons.className = 'buttons';
+  var buttonAdd = createAddBtn();
+  var buttonCancel = createCancelBtn();
+  divButtons.appendChild(buttonAdd);
+  divButtons.appendChild(buttonCancel);
+
+  divWrapper.appendChild(divForm);
+  divWrapper.appendChild(divButtons);
+  divModalContent.appendChild(divWrapper);
+
+
+  divForm.addEventListener('keydown', function(e) {
+    if(e.keyCode === 13 && e.target.className === 'title-input') {
+      bullet.focus();
+    }
+    if(e.keyCode === 13 && e.target.className === 'bullet-point') {
+      console.log(e)
+      e.preventDefault();
+      
+      var li = document.createElement('li');
+
+      var newBullet = createBulletInput();
+      li.appendChild(newBullet)
+      ul.appendChild(li);
+      newBullet.focus();
+      arrDOMElements.push(newBullet);
+    }
+  })
+
+
+  buttonAdd.addEventListener('click', function() {
+    var listContent = [];
+    for (var i = 0; i < arrDOMElements.length; i ++) {
+      listContent.push(arrDOMElements[i].value)
+    }
+    
+    var listObj = {
+      type: "list",
+      title: titleInput.value,
+      content: listContent
+
+    }
+
+    itemsArr.push(listObj);
+
+    var cardObj = createCard(listObj);
+
+    var contentEl = cardObj.card.querySelector('ul');
+    contentEl.className = 'bulletpoints card-bullets';
+
+    contentEl.innerHTML = '';
+    for (var j = 0; j < listContent.length; j ++) {
+      var li = document.createElement('li');
+      if (listContent[j] !== '')  {
+        li.textContent = listContent[j];
+        contentEl.appendChild(li);
+      }
+    }
+
+    placeFirst(cardObj.card);
+   
+    deleteElement(divWrapper);
+    closeModal.click();
+  })
+
+  buttonCancel.addEventListener('click', function(){
+  deleteElement(divWrapper);
+  })
+  
+})
+
+
+var createBulletInput = function() {
+  var input = document.createElement('input');
+  input.setAttribute('name', 'bulletPoint');
+  input.setAttribute('placeholder', 'Add...')
+  input.className = 'bullet-point';
+  return input;
+}
+
 

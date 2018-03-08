@@ -68,6 +68,7 @@ input {
   background-color: #ff4f4f;
 }
 
+
 .twitter-blue {
   background-color: #00aced;
 }
@@ -79,3 +80,13 @@ input {
 .card-action a:hover {
   cursor: pointer;
 }
+
+ul.bulletpoints > li {
+  list-style-type: disc;
+  margin-left: 3%;
+}
+
+.card-bullets {
+  margin-left: 5%
+}
+
