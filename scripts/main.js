@@ -1,19 +1,49 @@
 let itemsContainer = document.querySelector('.items-container');
 
 document.addEventListener('DOMContentLoaded', function (event) {
-  render(itemsArr);
+  getData().then(render); 
 });
+
+function testfunc() {
+  console.log('you added something!');
+}
+
+let getData = function() {
+  let firebaseArr = [];
+  let firebaseRef = firebase.database().ref();
+  return firebaseRef.once('value').then(function(snapshot) {
+    let firebaseObj = snapshot.val();
+    for (key in firebaseObj) {
+      firebaseObj[key]["id"] = key;
+      firebaseArr.push(firebaseObj[key]);
+    }
+    return firebaseArr;
+  })
+
+};
+
+let writeData = function(testObj) {
+  return firebase.database().ref().push().set({
+    title: testObj.title,
+    content: testObj.content,
+    type: testObj.type
+  }).then( function () {
+    
+  });
+};
 
 let render = function(itemsArr) {
   itemsArr.forEach( function(card, i)  {
     let cardObj = createCard(card);
     itemsContainer.appendChild(cardObj.card);
+    
 
     cardObj.cta3.addEventListener('click', function(event) {
       cardObj.card.remove();
     });
   })
 };
+
 
 let createCard = function(itemObj) {
   let cardDiv = document.createElement('div');
@@ -59,56 +89,6 @@ let createCard = function(itemObj) {
   return cardObj;
 };
 
-let itemsArr = [
-  {
-    title: "Cool title",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam."
-  },
-   {
-    title: "Cool title",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam."
-  },
-   {
-    title: "Cool title",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam."
-  },
-   {
-    title: "Cool title",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam."
-  },
-   {
-    title: "Cool title",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam."
-  },
-   {
-    title: "Cool title",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam."
-  },
-   {
-    title: "Cool title",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam."
-  },
-   {
-    title: "Cool title",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam."
-  },
-   {
-    title: "Cool title",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam."
-  },
-  {
-    title: "Cool title",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam."
-  },
-  {
-    title: "Cool title",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam."
-  },
-  {
-    title: "Cool title",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam."
-  }
-];
 
 $(document).ready(function(){
   // the "href" attribute of the modal trigger must specify the modal ID that wants to be triggered
@@ -139,8 +119,7 @@ addImageModal.addEventListener('click', function() {
       title: 'Hello world',
       content: url
     }
- 
-    itemsArr.push(imgObj);
+    writeData(imgObj).then(testfunc);
 
     var cardObj = createCard(imgObj);
     var image = document.createElement('img');
@@ -190,8 +169,8 @@ addTextModal.addEventListener('click', function() {
       title: 'Hello world',
       content: text
     }
-  
-    itemsArr.push(textObj);
+    writeData(textObj).then(testfunc);
+    
 
     var cardObj = createCard(textObj);
 
