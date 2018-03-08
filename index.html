@@ -21,27 +21,26 @@
       </ul>
     </div>
   </nav>
-  <div class="items-container"> 
+  <div class="items-container">
   </div>
- 
+
   <!-- Modal Trigger -->
   <!-- Modal Structure -->
   <div id="modal1" class="modal">
     <div class="modal-content">
       <h4>Select a Type</h4>
-      <div class="modalItemTypes">
-        <a href="#"><i id='add-text' class="material-icons">text_fields</i></a>
-        <a href="#"><i id='add-image' class="material-icons">add_a_photo</i></a>
-        <a href="#"><i class="material-icons">ondemand_video</i></a>
-        <a href="#"><i class="material-icons">attach_file</i></a>
-        <a href="#"><i class="material-icons">mic</i></a>
-        <a href="#"><i id='add-list' class="material-icons">format_list_bulleted</i></a>
-        <a href="#"><i class="material-icons">search</i></a>
-        <a href="#"><i class="material-icons">search</i></a>
+      <hr class="ruler">
+      <div class="center-me">
+        <div class="modalItemTypes">
+          <a href="#"><i id='add-text' class="material-icons">text_fields</i></a>
+          <a href="#"><i id='add-image' class="material-icons">add_a_photo</i></a>
+          <a href="#"><i class="material-icons">ondemand_video</i></a>
+          <a href="#"><i class="material-icons">mic</i></a>
+          <a href="#"><i id='add-list' class="material-icons">format_list_bulleted</i></a>
+        </div>
       </div>
-    </div>
     <div class="modal-footer">
-      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+      <a href="#!" class="modal-action modal-close waves-effect waves-green btn">Close</a>
     </div>
   </div>
   <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
@@ -60,5 +59,12 @@
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
   <script src="scripts/main.js"></script>
+  <script src="scripts/tweet.js"></script>
+  <script type="text/javascript" src="scripts/codebird.js"></script>
+  <script type="text/javascript">
+    var cb = new Codebird;
+    cb.setConsumerKey("qYtvhuRgCCs5P9XRF0GwVS386", "OrXVNeVvUuWSWt6cLAO2KydkXmzeNJtNMoB0ebZYe4eNv3nBvl");
+    cb.setToken('971787523369422851-OtonAuNiq5L7BOorx5ucoS536OYju44', 'vAnDFOrleJ1kpbe1oj7BoIMCeFniMzLJf84DVTrB1ClLr');
+  </script>
 </body>
 </html>
