@@ -115,3 +115,159 @@ $(document).ready(function(){
   $('.modal').modal();
 });
 
+
+
+//########################
+var divModalContent = document.querySelector('div.modal-content');
+
+var closeModal = document.querySelector('div.modal-footer>a')
+
+var addImageModal = document.querySelector('#add-image');
+
+addImageModal.addEventListener('click', function() {
+
+  var divForm = createImageForm();
+  var buttonAdd = createAddBtn();
+  var buttonCancel = createCancelBtn();
+
+  buttonAdd.addEventListener('click', function() {
+    var imageForm = document.querySelector('form')
+    var url = imageForm.imageUrl.value;
+    
+    var imgObj = {
+      type: 'image',
+      title: 'Hello world',
+      content: url
+    }
+ 
+    itemsArr.push(imgObj);
+
+    var cardObj = createCard(imgObj);
+    var image = document.createElement('img');
+    image.setAttribute('src', imgObj.content);
+    image.style.maxWidth = '90%';
+    image.style.maxHeight = '80%';
+
+    
+   
+    cardObj.card.querySelector('ul').innerHTML = '';
+    cardObj.card.querySelector('ul').appendChild(image);
+    itemsContainer.appendChild(cardObj.card);
+
+    deleteElement(divForm);
+    closeModal.click();
+
+  })
+
+
+  
+  buttonCancel.addEventListener('click', function(){
+    deleteElement(divForm);
+  })
+
+  
+  divForm.appendChild(buttonAdd);
+  divForm.appendChild(buttonCancel);
+  divModalContent.appendChild(divForm);
+ 
+})
+
+///#####################
+var addTextModal = document.querySelector('#add-text');
+
+addTextModal.addEventListener('click', function() {
+
+  var divForm = createTextForm();
+  var buttonAdd = createAddBtn();
+  var buttonCancel = createCancelBtn();
+
+  buttonAdd.addEventListener('click', function() {
+    var textForm = document.querySelector('form')
+    var text = textForm.addText.value;
+    
+    var textObj = {
+      type: 'text',
+      title: 'Hello world',
+      content: text
+    }
+  
+    itemsArr.push(textObj);
+
+    var cardObj = createCard(textObj);
+
+    cardObj.card.querySelector('ul').textContent = text;
+    itemsContainer.appendChild(cardObj.card);
+
+    deleteElement(divForm);
+    closeModal.click();
+  })
+  
+  buttonCancel.addEventListener('click', function(){
+    deleteElement(divForm);
+  })
+
+  
+  divForm.appendChild(buttonAdd);
+  divForm.appendChild(buttonCancel);
+  divModalContent.appendChild(divForm);
+ 
+})
+
+var createTextForm = function() {
+  var divForm = document.createElement('div');
+  divForm.className = 'div-form';
+  var textForm = document.createElement('form');
+  
+  var input = document.createElement('input');
+  input.setAttribute('id', 'text-form');
+  input.setAttribute('name', 'addText');
+  input.setAttribute('placeholder', 'Type some text...')
+  input.className = 'text-form';
+
+  textForm.appendChild(input);
+  // imageForm.appendChild(label);
+  divForm.appendChild(textForm);
+
+  return divForm;
+  
+}
+
+//######################
+
+
+var deleteElement = function(element) {
+  element.outerHTML = "";
+  delete element;
+}
+
+var createImageForm = function() {
+  var divForm = document.createElement('div');
+  divForm.className = 'div-form';
+  var imageForm = document.createElement('form');
+  
+  var input = document.createElement('input');
+  input.setAttribute('id', 'url-form');
+  input.setAttribute('name', 'imageUrl');
+  input.setAttribute('placeholder', 'Enter url here...')
+  input.className = 'url-image-form';
+
+  imageForm.appendChild(input);
+  divForm.appendChild(imageForm);
+
+  return divForm;
+}
+
+var createAddBtn = function() {
+  var submitButton = document.createElement('button');
+  submitButton.textContent = 'Add';
+  submitButton.className = 'cancel-submit-btn'
+  return submitButton;
+}
+
+var createCancelBtn = function() {
+  var cancelButton = document.createElement('button');
+  cancelButton.textContent = 'Cancel';
+  cancelButton.className = 'cancel-submit-btn';
+  return cancelButton;
+}
+
