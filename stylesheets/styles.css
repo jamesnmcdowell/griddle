@@ -22,3 +22,23 @@ nav {
   width: 50%;
 }
 
+
+
+input {
+  border: 2px solid black;
+  min-width: 100px;
+  min-height: 20px;
+}
+
+#url-form {
+  border: 2px solid black;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  width: 90%;
+  height: 5%;
+  padding: 5px;
+  border-radius: 5px;
+  
+}
+
+

@@ -115,3 +115,132 @@ $(document).ready(function(){
   $('.modal').modal();
 });
 
+
+
+//########################
+var divModalContent = document.querySelector('div.modal-content');
+
+var addImageModal = document.querySelector('#add-image');
+
+addImageModal.addEventListener('click', function() {
+
+  var divForm = createImageForm();
+  var buttonAdd = createAddBtn();
+
+  buttonAdd.addEventListener('click', function() {
+    var imageForm = document.querySelector('form')
+    var url = imageForm.imageUrl.value;
+    
+    var imgObj = {
+      type: 'image',
+      title: 'Hello world',
+      content: url
+    }
+
+    
+    itemsArr.push(imgObj);
+    //render(itemsArr)
+    //might not be effective in terms of performance?
+
+    var cardObj = createCard(imgObj);
+    var image = document.createElement('img');
+    image.setAttribute('src', imgObj.content);
+    // console.log(cardObj.querySelector('ul'))
+    console.log(image)
+    cardObj.card.querySelector('ul').innerHTML = '';
+    cardObj.card.querySelector('ul').appendChild(image);
+    itemsContainer.appendChild(cardObj.card);
+
+  })
+
+
+
+
+
+  var createImageCard = function(imgObj) {
+
+  }
+
+  var buttonCancel = createCancelBtn();
+  buttonCancel.addEventListener('click', function(){
+    deleteElement(divForm)
+  })
+
+  
+  divForm.appendChild(buttonAdd);
+  divForm.appendChild(buttonCancel);
+  divModalContent.appendChild(divForm);
+
+  // divModalContent.appendChild(buttonAdd);
+  // divModalContent.appendChild(buttonCancel);
+
+  
+
+  
+
+ 
+})
+
+var deleteElement = function(element) {
+  element.outerHTML = "";
+  delete element;
+}
+
+var createImageForm = function() {
+  var divForm = document.createElement('div');
+  divForm.className = 'div-form';
+  var imageForm = document.createElement('form');
+  
+  var input = document.createElement('input');
+  input.setAttribute('id', 'url-form');
+  input.setAttribute('name', 'imageUrl');
+  input.setAttribute('placeholder', 'Enter url here...')
+  input.className = 'url-image-form';
+
+  // var label = document.createElement('label');
+  // label.setAttribute('for', 'url-form');
+  // label.textContent = "add image url";
+
+  
+  imageForm.appendChild(input);
+  // imageForm.appendChild(label);
+  divForm.appendChild(imageForm);
+
+  return divForm;
+  
+}
+
+var createAddBtn = function() {
+  var submitButton = document.createElement('button');
+  submitButton.setAttribute('type', 'button');
+  submitButton.textContent = 'Add';
+  submitButton.className = 'cancel-submit-btn'
+  return submitButton;
+}
+
+var createCancelBtn = function() {
+  var cancelButton = document.createElement('button');
+  cancelButton.setAttribute('type', 'cancel');
+  cancelButton.textContent = 'Cancel';
+  cancelButton.className = 'cancel-submit-btn';
+  return cancelButton;
+}
+
+
+
+// modals.addEventListener('click', function(e) {
+//   if (e.target.id = 'add-img') {
+
+//   }
+//   else if (e.target.id = 'add-txt') {
+//     createDiv
+//     createInputForm
+//     add button submit
+//     add button cancel
+//     append input to div
+//     append div to modal 
+//     positon fixed
+
+
+//   }
+// })
