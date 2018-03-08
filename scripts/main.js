@@ -299,52 +299,28 @@ var placeFirst = function(element) {
 
 //#####################
 
-//################
-
-// var closeModal = function() {
-//   var body = document.querySelector('body')
-// }
-
-// modals.addEventListener('click', function(e) {
-//   if (e.target.id = 'add-img') {
-
-//   }
-//   else if (e.target.id = 'add-txt') {
-//     createDiv
-//     createInputForm
-//     add button submit
-//     add button cancel
-//     append input to div
-//     append div to modal 
-//     positon fixed
-
-
-//   }
-// })
-
 var addListModal = document.querySelector('#add-list');
 
 addListModal.addEventListener('click', function() {
   var arrDOMElements = []
 
-  var divWrapper = document.createElement('div')
+  var divWrapper = document.createElement('div');
   var divForm = document.createElement('div');
   divForm.className = "list-form";
 
   var ul = document.createElement('ul')
-  ul.className = 'bulletpoints'
+  ul.className = 'bulletpoints';
+
   var li = document.createElement('li');
+  var bullet = createBulletInput();
+  arrDOMElements.push(bullet);
 
   var titleInput = createTitleInput();
-  divForm.appendChild(titleInput);
-  
 
-  // var bullet = createImageForm();
-  var bullet = createBulletInput();
+  divForm.appendChild(titleInput);
   li.appendChild(bullet)
   ul.appendChild(li);
   divForm.appendChild(ul);
-  arrDOMElements.push(bullet);
 
   var divButtons = document.createElement('div');
   divButtons.className = 'buttons';
@@ -373,10 +349,6 @@ addListModal.addEventListener('click', function() {
       ul.appendChild(li);
       newBullet.focus();
       arrDOMElements.push(newBullet);
-
-      
-
-      // divForm.appendChild(newDiv);
     }
   })
 
@@ -397,14 +369,9 @@ addListModal.addEventListener('click', function() {
     itemsArr.push(listObj);
 
     var cardObj = createCard(listObj);
-    // var image = document.createElement('img');
-    // image.setAttribute('src', imgObj.content);
-    // image.style.maxWidth = '90%';
-    // image.style.maxHeight = '80%';
 
-    console.log(listContent)
-    var contentEl = cardObj.card.querySelector('ul')
-    contentEl.className = 'bulletpoints card-bullets'
+    var contentEl = cardObj.card.querySelector('ul');
+    contentEl.className = 'bulletpoints card-bullets';
 
     contentEl.innerHTML = '';
     for (var j = 0; j < listContent.length; j ++) {
@@ -413,17 +380,10 @@ addListModal.addEventListener('click', function() {
         li.textContent = listContent[j];
         contentEl.appendChild(li);
       }
-      // console.log(typeof listContent[j])
-      
-
     }
-
-    // cardObj.card.querySelector('ul').appendChild(image);
-    // console.log(cardObj.card.querySelector('ul').innerHTML)
 
     placeFirst(cardObj.card);
    
-
     deleteElement(divWrapper);
     closeModal.click();
   })
@@ -436,19 +396,10 @@ addListModal.addEventListener('click', function() {
 
 
 var createBulletInput = function() {
-  
-  
   var input = document.createElement('input');
-  // input.setAttribute('type', 'checkbox')
-  // input.setAttribute('id', 'bullet-point');
   input.setAttribute('name', 'bulletPoint');
   input.setAttribute('placeholder', 'Add...')
   input.className = 'bullet-point';
-
-  // imageForm.appendChild(input);
-  // // imageForm.appendChild(label);
-  // divForm.appendChild(imageForm);
-
   return input;
 }
 
