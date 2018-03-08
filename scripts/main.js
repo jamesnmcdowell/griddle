@@ -309,3 +309,110 @@ var placeFirst = function(element) {
   itemsContainer.insertBefore(element, firstCard)
 }
 
+//#####################
+
+var addListModal = document.querySelector('#add-list');
+
+addListModal.addEventListener('click', function() {
+  var arrDOMElements = []
+
+  var divWrapper = document.createElement('div');
+  var divForm = document.createElement('div');
+  divForm.className = "list-form";
+
+  var ul = document.createElement('ul')
+  ul.className = 'bulletpoints';
+
+  var li = document.createElement('li');
+  var bullet = createBulletInput();
+  arrDOMElements.push(bullet);
+
+  var titleInput = createTitleInput();
+
+  divForm.appendChild(titleInput);
+  li.appendChild(bullet)
+  ul.appendChild(li);
+  divForm.appendChild(ul);
+
+  var divButtons = document.createElement('div');
+  divButtons.className = 'buttons';
+  var buttonAdd = createAddBtn();
+  var buttonCancel = createCancelBtn();
+  divButtons.appendChild(buttonAdd);
+  divButtons.appendChild(buttonCancel);
+
+  divWrapper.appendChild(divForm);
+  divWrapper.appendChild(divButtons);
+  divModalContent.appendChild(divWrapper);
+
+
+  divForm.addEventListener('keydown', function(e) {
+    if(e.keyCode === 13 && e.target.className === 'title-input') {
+      bullet.focus();
+    }
+    if(e.keyCode === 13 && e.target.className === 'bullet-point') {
+      console.log(e)
+      e.preventDefault();
+      
+      var li = document.createElement('li');
+
+      var newBullet = createBulletInput();
+      li.appendChild(newBullet)
+      ul.appendChild(li);
+      newBullet.focus();
+      arrDOMElements.push(newBullet);
+    }
+  })
+
+
+  buttonAdd.addEventListener('click', function() {
+    var listContent = [];
+    for (var i = 0; i < arrDOMElements.length; i ++) {
+      listContent.push(arrDOMElements[i].value)
+    }
+    
+    var listObj = {
+      type: "list",
+      title: titleInput.value,
+      content: listContent
+
+    }
+
+    itemsArr.push(listObj);
+
+    var cardObj = createCard(listObj);
+
+    var contentEl = cardObj.card.querySelector('ul');
+    contentEl.className = 'bulletpoints card-bullets';
+
+    contentEl.innerHTML = '';
+    for (var j = 0; j < listContent.length; j ++) {
+      var li = document.createElement('li');
+      if (listContent[j] !== '')  {
+        li.textContent = listContent[j];
+        contentEl.appendChild(li);
+      }
+    }
+
+    placeFirst(cardObj.card);
+   
+    deleteElement(divWrapper);
+    closeModal.click();
+  })
+
+  buttonCancel.addEventListener('click', function(){
+  deleteElement(divWrapper);
+  })
+  
+})
+
+
+var createBulletInput = function() {
+  var input = document.createElement('input');
+  input.setAttribute('name', 'bulletPoint');
+  input.setAttribute('placeholder', 'Add...')
+  input.className = 'bullet-point';
+  return input;
+}
+
+
