@@ -9,7 +9,7 @@
   grid-auto-rows: minmax(150px, auto);
   grid-auto-flow: dense;
   padding: 10px;
-    
+
 }
 
 nav {
@@ -18,8 +18,17 @@ nav {
 
 .modalItemTypes {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  width: 50%;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  margin-top: 30px;
+}
+
+.modalItemTypes a .material-icons {
+  font-size: 45px;
+  margin: 20px;
+}
+
+.modalItemTypes a .material-icons:hover {
+  color: #05567d;
 }
 
 
@@ -38,8 +47,24 @@ input {
   height: 5%;
   padding: 5px;
   border-radius: 5px;
-  
+
+}
+
+.center-me {
+  display: grid;
+  justify-items: center;
+}
+
+.ruler {
+    border-top: grey;
 }
 
 
+.btn {
+  background-color: #ff6c6c;
+}
+
+.btn:hover {
+  background-color: #ff4f4f;
+}
 
