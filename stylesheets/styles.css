@@ -90,3 +90,22 @@ ul.bulletpoints > li {
   margin-left: 5%
 }
 
+.filters {
+  display: grid;
+  justify-items: center;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  width: 300px;
+  margin-top: 25px;
+}
+
+.filter-wrapper {
+  display: grid;
+  justify-items: end;
+  margin-right: 15px;
+}
+
+@media only screen and (min-width: 1200px) {
+  html {
+      font-size: 14.5px;
+  }
+}
