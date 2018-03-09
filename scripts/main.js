@@ -155,25 +155,9 @@ var addTextModal = document.querySelector('#add-text');
 addTextModal.addEventListener('click', function() {
 
   var divForm = createTextForm();
-  var buttonAdd = createAddBtn();
-  var buttonCancel = createCancelBtn();
+  var divButtons = createButtons('text', divForm, null)
 
-  buttonAdd.addEventListener('click', function() {
-    let textObj = createTextObj();
-    writeData(textObj).then(testfunc);
-    let cardObj = load(textObj);
-  
-    placeFirst(cardObj.card);
-
-    deleteElement(divForm);
-    closeModal.click();
-  })
-
-  buttonCancel.addEventListener('click', function(){
-    deleteElement(divForm);
-  })
-  divForm.appendChild(buttonAdd);
-  divForm.appendChild(buttonCancel);
+  divForm.appendChild(divButtons);
   divModalContent.appendChild(divForm);
 })
 
@@ -210,25 +194,8 @@ var addImageModal = document.querySelector('#add-image');
 addImageModal.addEventListener('click', function() {
 
   var divForm = createImageForm();
-  var buttonAdd = createAddBtn();
-  var buttonCancel = createCancelBtn();
-
-  buttonAdd.addEventListener('click', function() {
-    let imgObj = createImgObj();
-    writeData(imgObj).then(testfunc);
-    let cardObj = load(imgObj);
-    
-    placeFirst(cardObj.card);
-    deleteElement(divForm);
-    closeModal.click();
-  })
-  
-  buttonCancel.addEventListener('click', function(){
-    deleteElement(divForm);
-  })
-  
-  divForm.appendChild(buttonAdd);
-  divForm.appendChild(buttonCancel);
+  var divButtons = createButtons('image', divForm, null);
+  divForm.appendChild(divButtons);
   divModalContent.appendChild(divForm);
 })
 
@@ -312,13 +279,7 @@ addListModal.addEventListener('click', function() {
   ul.appendChild(li);
   divForm.appendChild(ul);
 
-  var divButtons = document.createElement('div');
-  divButtons.className = 'buttons';
-  var buttonAdd = createAddBtn();
-  var buttonCancel = createCancelBtn();
-  divButtons.appendChild(buttonAdd);
-  divButtons.appendChild(buttonCancel);
-
+  var divButtons = createButtons('list', divWrapper, arrDOMElements);
   divWrapper.appendChild(divForm);
   divWrapper.appendChild(divButtons);
   divModalContent.appendChild(divWrapper);
@@ -341,24 +302,6 @@ addListModal.addEventListener('click', function() {
       arrDOMElements.push(newBullet);
     }
   })
-
-
-  buttonAdd.addEventListener('click', function() {
-    var listObj = createListObj(arrDOMElements);
-
-    writeData(listObj).then(testfunc);
-    var cardObj = load(listObj);
-
-    placeFirst(cardObj.card);
-
-    deleteElement(divWrapper);
-    closeModal.click();
-  })
-
-  buttonCancel.addEventListener('click', function(){
-  deleteElement(divWrapper);
-  })
-
 })
 
 
@@ -408,3 +351,48 @@ var createListObj = function(arrDOMElements) {
 var createDivButtons = function() {
   
 }
+
+
+var createButtons = function(objType, divToDelete, arrDOMElements ) {
+
+  var divButtons = document.createElement('div');
+  divButtons.className = 'buttons';
+  var buttonAdd = createAddBtn();
+  var buttonCancel = createCancelBtn();
+  divButtons.appendChild(buttonAdd);
+  divButtons.appendChild(buttonCancel);
+
+  buttonAdd.addEventListener('click', function() {
+
+    var someObj;
+
+    if (objType === 'text') {
+      someObj = createTextObj();
+    } else
+    if (objType === 'list') {
+      someObj = createListObj(arrDOMElements);
+    } else 
+    if (objType === 'image') {
+      someObj = createImgObj();
+    } else { 
+      console.log('check object type!! createButtons function')
+      return
+    }
+    
+    writeData(someObj).then(testfunc);
+    var cardObj = load(someObj);
+
+    placeFirst(cardObj.card);
+
+    deleteElement(divToDelete);
+    closeModal.click();
+  })
+
+  buttonCancel.addEventListener('click', function(){
+    deleteElement(divToDelete);
+  })
+
+  return divButtons;
+}
+
+
