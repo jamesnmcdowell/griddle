@@ -399,3 +399,7 @@ var createBulletInput = function() {
   input.className = 'bullet-point';
   return input;
 }
+
+var filter = function(type) {
+
+}
