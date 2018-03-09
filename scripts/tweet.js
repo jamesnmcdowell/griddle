@@ -14,7 +14,9 @@ var tweet = function(event) {
       );
     })
     postPromise.then(function(value) {
-      currentCard.classList.remove('blue-grey');
-      currentCard.classList.add('twitter-blue');
+      currentCard.classList.replace('blue-grey','twitter-blue');
+    })
+    postPromise.catch(function(value) {
+      currentCard.classList.replace('blue-grey','failure-call');
     })
 }

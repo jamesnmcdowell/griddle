@@ -1,7 +1,7 @@
 let itemsContainer = document.querySelector('.items-container');
 
 document.addEventListener('DOMContentLoaded', function (event) {
-  getData().then(render); 
+  getData().then(render);
 });
 
 function testfunc() {
@@ -28,15 +28,16 @@ let writeData = function(testObj) {
     content: testObj.content,
     type: testObj.type
   }).then( function () {
-    
+
   });
 };
 
 let render = function(itemsArr) {
   itemsArr.forEach( function(card, i)  {
+    console.log(card);
     let cardObj = createCard(card);
     itemsContainer.appendChild(cardObj.card);
-    
+
 
     cardObj.cta3.addEventListener('click', function(event) {
       cardObj.card.remove();
@@ -44,14 +45,22 @@ let render = function(itemsArr) {
   })
 };
 
+var createElementWithClasses = function(element, classArray) {
+  var newElement = document.createElement(element);
+  classArray.forEach(function(newClass) {
+    newElement.classList.add(newClass);
+  });
+
+  return newElement;
+}
 
 let createCard = function(itemObj) {
-  let cardDiv = document.createElement('div');
-  let cardWrapperDiv = document.createElement('div');
-  let cardContentDiv = document.createElement('div');
-  let cardTitle = document.createElement('span');
+  let cardDiv = createElementWithClasses('div', ['grid-item']);
+  let cardWrapperDiv = createElementWithClasses('div', ['card', 'blue-grey', 'darken-1']);
+  let cardContentDiv = createElementWithClasses('div', ["card-content", "white-text"]);
+  let cardTitle = createElementWithClasses('span', ['card-title']);
   let cardContentInner = document.createElement('ul');
-  let cardActionDiv = document.createElement('div');
+  let cardActionDiv = createElementWithClasses('div', ['card-action']);
   let cardAction1 = document.createElement('a');
   let cardAction2 = document.createElement('a');
   let cardAction3 = document.createElement('a');
@@ -63,15 +72,6 @@ let createCard = function(itemObj) {
   cardActionDiv.appendChild(cardAction3);
   cardWrapperDiv.appendChild(cardContentDiv);
   cardWrapperDiv.appendChild(cardActionDiv);
-
-  cardTitle.classList.add("card-title");
-  cardActionDiv.classList.add("card-action");
-  cardContentDiv.classList.add("card-content");
-  cardContentDiv.classList.add("white-text");
-  cardWrapperDiv.classList.add("card");
-  cardWrapperDiv.classList.add("blue-grey");
-  cardWrapperDiv.classList.add("darken-1");
-  cardDiv.classList.add("grid-item");
 
   cardTitle.textContent = itemObj.title;
   cardContentInner.textContent = itemObj.content;
@@ -116,13 +116,13 @@ addImageModal.addEventListener('click', function() {
     var url = imageForm.imageUrl.value;
 
     var title = imageForm.addTitle.value;
-    
+
     var imgObj = {
       type: 'image',
       title: title,
       content: url
     }
-    
+
     writeData(imgObj).then(testfunc);
 
     var cardObj = createCard(imgObj);
@@ -137,7 +137,7 @@ addImageModal.addEventListener('click', function() {
     cardObj.card.querySelector('ul').appendChild(image);
 
     placeFirst(cardObj.card);
-   
+
 
     deleteElement(divForm);
     closeModal.click();
@@ -171,8 +171,8 @@ addTextModal.addEventListener('click', function() {
     var text = textForm.addText.value;
 
     var title = textForm.addTitle.value;
-    
-    
+
+
     var textObj = {
       type: 'text',
       title: title,
@@ -180,7 +180,7 @@ addTextModal.addEventListener('click', function() {
     }
 
     writeData(textObj).then(testfunc);
-    
+
     var cardObj = createCard(textObj);
 
     cardObj.card.querySelector('ul').textContent = text;
@@ -215,7 +215,7 @@ var createTextForm = function() {
   input.setAttribute('placeholder', 'Type some text...')
   input.className = 'text-form';
 
-  
+
   var textArea = document.createElement('textarea');
   textArea.setAttribute('id', 'text-form');
   textArea.setAttribute('name', 'addText');
@@ -250,8 +250,7 @@ var deleteElement = function(element) {
 }
 
 var createImageForm = function() {
-  var divForm = document.createElement('div');
-  divForm.className = 'div-form';
+  var divForm = createElementWithClasses('div', ['div-form']);
   var imageForm = document.createElement('form');
 
   var input = document.createElement('input');
@@ -333,7 +332,7 @@ addListModal.addEventListener('click', function() {
     if(e.keyCode === 13 && e.target.className === 'bullet-point') {
       console.log(e)
       e.preventDefault();
-      
+
       var li = document.createElement('li');
 
       var newBullet = createBulletInput();
@@ -350,7 +349,7 @@ addListModal.addEventListener('click', function() {
     for (var i = 0; i < arrDOMElements.length; i ++) {
       listContent.push(arrDOMElements[i].value)
     }
-    
+
     var listObj = {
       type: "list",
       title: titleInput.value,
@@ -375,7 +374,7 @@ addListModal.addEventListener('click', function() {
     }
 
     placeFirst(cardObj.card);
-   
+
     deleteElement(divWrapper);
     closeModal.click();
   })
@@ -383,7 +382,7 @@ addListModal.addEventListener('click', function() {
   buttonCancel.addEventListener('click', function(){
   deleteElement(divWrapper);
   })
-  
+
 })
 
 
@@ -394,5 +393,3 @@ var createBulletInput = function() {
   input.className = 'bullet-point';
   return input;
 }
-
-
