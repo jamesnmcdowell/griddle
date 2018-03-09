@@ -1,13 +1,13 @@
 let itemsContainer = document.querySelector('.items-container');
 
 document.addEventListener('DOMContentLoaded', function (event) {
+  //materialize modal setup
+  $('.modal').modal();
+  //get data from firebase and render on page
   getData().then(render);
 });
 
-function testfunc() {
-  console.log('you added something!');
-}
-
+//read data to firebase
 let getData = function() {
   let firebaseArr = [];
   let firebaseRef = firebase.database().ref();
@@ -19,54 +19,70 @@ let getData = function() {
     }
     return firebaseArr;
   })
-
 };
 
+//write data to firebase
 let writeData = function(testObj) {
   return firebase.database().ref().push().set({
     title: testObj.title,
     content: testObj.content,
     type: testObj.type
   }).then( function () {
-
   });
 };
 
+//return cardObj with correct type
+let load = function(itemObj) {
+  let itemDiv;
+  if (itemObj.type === "text") {
+    itemDiv = createTextElements(itemObj);
+  }
+  else if (itemObj.type === "image") {
+    itemDiv = createImgElements(itemObj);
+  }
+  else if (itemObj.type === "list") { 
+  }
+  let cardObj = createCard(itemObj, itemDiv);
+  return cardObj;
+};
+
+//render an array of objects
 let render = function(itemsArr) {
-  itemsArr.forEach( function(card, i)  {
-    console.log(card);
-    let cardObj = createCard(card);
+  itemsArr.forEach( function(itemObj, i) {
+    let cardObj = load(itemObj);
     itemsContainer.appendChild(cardObj.card);
-
-
     cardObj.cta3.addEventListener('click', function(event) {
       cardObj.card.remove();
     });
   })
 };
 
+//dummy function for testing promises
+function testfunc() {
+  console.log('you added something!');
+}
+
+//########################
 var createElementWithClasses = function(element, classArray) {
   var newElement = document.createElement(element);
   classArray.forEach(function(newClass) {
     newElement.classList.add(newClass);
   });
-
   return newElement;
 }
 
-let createCard = function(itemObj) {
+//create card element
+let createCard = function(itemObj, itemElem) {
   let cardDiv = createElementWithClasses('div', ['grid-item']);
   let cardWrapperDiv = createElementWithClasses('div', ['card', 'blue-grey', 'darken-1']);
   let cardContentDiv = createElementWithClasses('div', ["card-content", "white-text"]);
   let cardTitle = createElementWithClasses('span', ['card-title']);
-  let cardContentInner = document.createElement('ul');
   let cardActionDiv = createElementWithClasses('div', ['card-action']);
   let cardAction1 = document.createElement('a');
   let cardAction2 = document.createElement('a');
   let cardAction3 = document.createElement('a');
 
   cardContentDiv.appendChild(cardTitle);
-  cardContentDiv.appendChild(cardContentInner);
   cardActionDiv.appendChild(cardAction1);
   cardActionDiv.appendChild(cardAction2);
   cardActionDiv.appendChild(cardAction3);
@@ -74,7 +90,7 @@ let createCard = function(itemObj) {
   cardWrapperDiv.appendChild(cardActionDiv);
 
   cardTitle.textContent = itemObj.title;
-  cardContentInner.textContent = itemObj.content;
+  cardContentDiv.appendChild(itemElem);
   cardAction1.textContent = `Delay`;
   cardAction2.textContent = "Tweet";
   cardAction3.textContent = "Delete";
@@ -90,131 +106,19 @@ let createCard = function(itemObj) {
   return cardObj;
 };
 
-
-$(document).ready(function(){
-  // the "href" attribute of the modal trigger must specify the modal ID that wants to be triggered
-  $('.modal').modal();
-});
-
-
-
-//########################
-var divModalContent = document.querySelector('div.modal-content');
-
-var closeModal = document.querySelector('div.modal-footer>a')
-
-var addImageModal = document.querySelector('#add-image');
-
-addImageModal.addEventListener('click', function() {
-
-  var divForm = createImageForm();
-  var buttonAdd = createAddBtn();
-  var buttonCancel = createCancelBtn();
-
-  buttonAdd.addEventListener('click', function() {
-    var imageForm = document.querySelector('form')
-    var url = imageForm.imageUrl.value;
-
-    var title = imageForm.addTitle.value;
-
-    var imgObj = {
-      type: 'image',
-      title: title,
-      content: url
-    }
-
-    writeData(imgObj).then(testfunc);
-
-    var cardObj = createCard(imgObj);
-    var image = document.createElement('img');
-    image.setAttribute('src', imgObj.content);
-    image.style.maxWidth = '90%';
-    image.style.maxHeight = '80%';
-
-
-
-    cardObj.card.querySelector('ul').innerHTML = '';
-    cardObj.card.querySelector('ul').appendChild(image);
-
-    placeFirst(cardObj.card);
-
-
-    deleteElement(divForm);
-    closeModal.click();
-
-  })
-
-
-
-  buttonCancel.addEventListener('click', function(){
-    deleteElement(divForm);
-  })
-
-
-  divForm.appendChild(buttonAdd);
-  divForm.appendChild(buttonCancel);
-  divModalContent.appendChild(divForm);
-
-})
-
 ///#####################
-var addTextModal = document.querySelector('#add-text');
 
-addTextModal.addEventListener('click', function() {
-
-  var divForm = createTextForm();
-  var buttonAdd = createAddBtn();
-  var buttonCancel = createCancelBtn();
-
-  buttonAdd.addEventListener('click', function() {
-    var textForm = document.querySelector('form')
-    var text = textForm.addText.value;
-
-    var title = textForm.addTitle.value;
-
-
-    var textObj = {
-      type: 'text',
-      title: title,
-      content: text
-    }
-
-    writeData(textObj).then(testfunc);
-
-    var cardObj = createCard(textObj);
-
-    cardObj.card.querySelector('ul').textContent = text;
-
-    placeFirst(cardObj.card);
-
-    deleteElement(divForm);
-    closeModal.click();
-  })
-
-  buttonCancel.addEventListener('click', function(){
-    deleteElement(divForm);
-  })
-
-
-  divForm.appendChild(buttonAdd);
-  divForm.appendChild(buttonCancel);
-  divModalContent.appendChild(divForm);
-
-
-})
-
+//create text form
 var createTextForm = function() {
   var divForm = document.createElement('div');
   divForm.className = 'div-form';
   var textForm = document.createElement('form');
-
 
   var input = document.createElement('input');
   input.setAttribute('id', 'text-form');
   input.setAttribute('name', 'addText');
   input.setAttribute('placeholder', 'Type some text...')
   input.className = 'text-form';
-
 
   var textArea = document.createElement('textarea');
   textArea.setAttribute('id', 'text-form');
@@ -224,16 +128,119 @@ var createTextForm = function() {
 
   var titleArea = createTitleInput()
 
-
   textForm.appendChild(titleArea);
   textForm.appendChild(textArea);
   divForm.appendChild(textForm);
 
   return divForm;
-
+}
+//create object specifically for text items 
+let createTextObj = function() {
+  var textForm = document.querySelector('form')
+  var text = textForm.addText.value;
+  var title = textForm.addTitle.value;
+  var textObj = {
+    type: 'text',
+    title: title,
+    content: text
+  }
+  return textObj;
 }
 
+//create element specifically for text items 
+let createTextElements = function(textObj) {
+  var containerDiv = document.createElement('div');
+  var p = document.createElement('p');
+  p.textContent = textObj.content;
+  containerDiv.appendChild(p);
+  return containerDiv;
+}
+
+var addTextModal = document.querySelector('#add-text');
+
+addTextModal.addEventListener('click', function() {
+
+  var divForm = createTextForm();
+  var buttonAdd = createAddBtn();
+  var buttonCancel = createCancelBtn();
+
+  buttonAdd.addEventListener('click', function() {
+    let textObj = createTextObj();
+    writeData(textObj).then(testfunc);
+    let textDiv = createImgElements(textObj);
+    let cardObj = load(textObj);
+  
+    placeFirst(cardObj.card);
+
+    deleteElement(divForm);
+    closeModal.click();
+  })
+
+  buttonCancel.addEventListener('click', function(){
+    deleteElement(divForm);
+  })
+  divForm.appendChild(buttonAdd);
+  divForm.appendChild(buttonCancel);
+  divModalContent.appendChild(divForm);
+})
+
 //######################
+
+//create object specifically for image items 
+let createImgObj = function() {
+  var imageForm = document.querySelector('form')
+  var url = imageForm.imageUrl.value;
+  var title = imageForm.addTitle.value;
+  var imgObj = {
+    type: 'image',
+    title: title,
+    content: url
+  }
+  return imgObj;
+}
+
+//create element specifically for image items 
+let createImgElements = function(imgObj) {
+  var containerDiv = document.createElement('div');
+  var image = document.createElement('img');
+  image.setAttribute('src', imgObj.content);
+  image.style.maxWidth = '90%';
+  image.style.maxHeight = '80%';
+  containerDiv.appendChild(image);
+  return containerDiv;
+}
+
+var divModalContent = document.querySelector('div.modal-content');
+var closeModal = document.querySelector('div.modal-footer>a')
+var addImageModal = document.querySelector('#add-image');
+
+addImageModal.addEventListener('click', function() {
+
+  var divForm = createImageForm();
+  var buttonAdd = createAddBtn();
+  var buttonCancel = createCancelBtn();
+
+  buttonAdd.addEventListener('click', function() {
+    let imgObj = createImgObj();
+    writeData(imgObj).then(testfunc);
+    let cardObj = load(imgObj);
+    
+    placeFirst(cardObj.card);
+    deleteElement(divForm);
+    closeModal.click();
+  })
+  
+  buttonCancel.addEventListener('click', function(){
+    deleteElement(divForm);
+  })
+  
+  divForm.appendChild(buttonAdd);
+  divForm.appendChild(buttonCancel);
+  divModalContent.appendChild(divForm);
+})
+
+//######################
+
 
 var createTitleInput = function() {
   var titleInput = document.createElement('input');
@@ -242,7 +249,6 @@ var createTitleInput = function() {
   titleInput.className = 'title-input';
   return titleInput;
 }
-
 
 var deleteElement = function(element) {
   element.outerHTML = "";
@@ -288,7 +294,7 @@ var placeFirst = function(element) {
   itemsContainer.insertBefore(element, firstCard)
 }
 
-//#####################
+//##### This code needs to be converted to new structure above ########
 
 var addListModal = document.querySelector('#add-list');
 
