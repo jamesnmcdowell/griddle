@@ -27,8 +27,7 @@ let writeData = function(testObj) {
     title: testObj.title,
     content: testObj.content,
     type: testObj.type
-  }).then( function () {
-  });
+  })
 };
 
 //return cardObj with correct type
@@ -40,7 +39,8 @@ let load = function(itemObj) {
   else if (itemObj.type === "image") {
     itemDiv = createImgElements(itemObj);
   }
-  else if (itemObj.type === "list") { 
+  else if (itemObj.type === "list") {
+    itemDiv = createListElements(itemObj); 
   }
   let cardObj = createCard(itemObj, itemDiv);
   return cardObj;
@@ -48,7 +48,7 @@ let load = function(itemObj) {
 
 //render an array of objects
 let render = function(itemsArr) {
-  itemsArr.forEach( function(itemObj, i) {
+  itemsArr.reverse().forEach( function(itemObj, i) {
     let cardObj = load(itemObj);
     itemsContainer.appendChild(cardObj.card);
     cardObj.cta3.addEventListener('click', function(event) {
@@ -114,12 +114,6 @@ var createTextForm = function() {
   divForm.className = 'div-form';
   var textForm = document.createElement('form');
 
-  var input = document.createElement('input');
-  input.setAttribute('id', 'text-form');
-  input.setAttribute('name', 'addText');
-  input.setAttribute('placeholder', 'Type some text...')
-  input.className = 'text-form';
-
   var textArea = document.createElement('textarea');
   textArea.setAttribute('id', 'text-form');
   textArea.setAttribute('name', 'addText');
@@ -167,7 +161,6 @@ addTextModal.addEventListener('click', function() {
   buttonAdd.addEventListener('click', function() {
     let textObj = createTextObj();
     writeData(textObj).then(testfunc);
-    let textDiv = createImgElements(textObj);
     let cardObj = load(textObj);
   
     placeFirst(cardObj.card);
@@ -351,33 +344,10 @@ addListModal.addEventListener('click', function() {
 
 
   buttonAdd.addEventListener('click', function() {
-    var listContent = [];
-    for (var i = 0; i < arrDOMElements.length; i ++) {
-      listContent.push(arrDOMElements[i].value)
-    }
+    var listObj = createListObj(arrDOMElements);
 
-    var listObj = {
-      type: "list",
-      title: titleInput.value,
-      content: listContent
-
-    }
-
-    itemsArr.push(listObj);
-
-    var cardObj = createCard(listObj);
-
-    var contentEl = cardObj.card.querySelector('ul');
-    contentEl.className = 'bulletpoints card-bullets';
-
-    contentEl.innerHTML = '';
-    for (var j = 0; j < listContent.length; j ++) {
-      var li = document.createElement('li');
-      if (listContent[j] !== '')  {
-        li.textContent = listContent[j];
-        contentEl.appendChild(li);
-      }
-    }
+    writeData(listObj).then(testfunc);
+    var cardObj = load(listObj);
 
     placeFirst(cardObj.card);
 
@@ -402,4 +372,39 @@ var createBulletInput = function() {
 
 var filter = function(type) {
 
+}
+
+
+var createListElements = function(listObj) {
+  var containerDiv = document.createElement('div');
+  var ul = document.createElement('ul');
+  ul.className = 'bulletpoints card-bullets';
+  for (var j = 0; j < listObj.content.length; j ++) {
+    if (listObj.content[j] !== '')  {
+      var li = document.createElement('li');
+      li.textContent = listObj.content[j];
+      ul.appendChild(li);
+    }
+  }
+  containerDiv.appendChild(ul);
+  return containerDiv;
+}
+
+
+var createListObj = function(arrDOMElements) {
+  var titleInput = document.querySelector('div.list-form>input');
+  var listContents = [];
+  for (var i = 0; i < arrDOMElements.length; i ++) {
+    listContents.push(arrDOMElements[i].value)
+  }
+  var listObj = {
+    type: "list",
+    title: titleInput.value,
+    content: listContents
+  }
+  return listObj;
+}
+
+var createDivButtons = function() {
+  
 }
