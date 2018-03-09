@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 });
 
 function testfunc() {
-  console.log('you added something!');
+  // console.log('you added something!');
 }
 
 let getData = function() {
@@ -33,8 +33,9 @@ let writeData = function(testObj) {
 };
 
 let render = function(itemsArr) {
+  console.log(itemsArr);
   itemsArr.forEach( function(card, i)  {
-    console.log(card);
+    // console.log(card);
     let cardObj = createCard(card);
     itemsContainer.appendChild(cardObj.card);
 
@@ -392,4 +393,8 @@ var createBulletInput = function() {
   input.setAttribute('placeholder', 'Add...')
   input.className = 'bullet-point';
   return input;
+}
+
+var filter = function(type) {
+
 }
