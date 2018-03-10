@@ -388,14 +388,34 @@ speechModal.addEventListener('click', function() {
   divModalContent.appendChild(divForm);
 
   var speechTextArea = divForm.querySelector('textarea');
+  var addButton = divButtons.querySelector('button');
+  addButton.textContent = 'End';
 
-  var recognition = initRecognition();
-  recognition.start();
+  var commands = {
+    'end': function() {
+      annyang.abort();
+      addButton.click();
+    },
+    'cancel': function() {
+      annyang.abort();
+      deleteElement(divForm);
+    },
+    'start over': function() {
+      speechTextArea.textContent = '';
+    }
+  }
+  // annyang.init(commands, true)
 
-  recognition.onresult = function(event) {
-    speechTextArea.textContent = event.results[0][0].transcript;
-    // console.log(event.results[0][0].transcript);
-  };
+  annyang.start()
+
+  annyang.addCommands(commands)
+
+  annyang.addCallback('result', function(phrases) {
+    if (phrases[0] !== ' and' && phrases[0] !== ' end') {
+      speechTextArea.textContent += phrases[0];
+    }
+    // speechTextArea.textContent += phrases[0];
+  })
 })
 
 
