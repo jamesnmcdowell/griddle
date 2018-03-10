@@ -267,16 +267,11 @@ addListModal.addEventListener('click', function() {
 
   var ul = document.createElement('ul')
   ul.className = 'bulletpoints';
-
-  var li = document.createElement('li');
-  var bullet = createBulletInput();
-  arrDOMElements.push(bullet);
+  appendInputLi(ul, arrDOMElements);
 
   var titleInput = createTitleInput();
 
   divForm.appendChild(titleInput);
-  li.appendChild(bullet)
-  ul.appendChild(li);
   divForm.appendChild(ul);
 
   var divButtons = createButtons('list', divWrapper, arrDOMElements);
@@ -290,20 +285,20 @@ addListModal.addEventListener('click', function() {
       bullet.focus();
     }
     if(e.keyCode === 13 && e.target.className === 'bullet-point') {
-      console.log(e)
       e.preventDefault();
-
-      var li = document.createElement('li');
-
-      var newBullet = createBulletInput();
-      li.appendChild(newBullet)
-      ul.appendChild(li);
-      newBullet.focus();
-      arrDOMElements.push(newBullet);
+      appendInputLi(ul, arrDOMElements);
     }
   })
 })
 
+var appendInputLi = function(ul, arrOfElements) {
+  var li = document.createElement('li');
+  var newBullet = createBulletInput();
+  li.appendChild(newBullet)
+  ul.appendChild(li);
+  newBullet.focus();
+  arrOfElements.push(newBullet);
+}
 
 var createBulletInput = function() {
   var input = document.createElement('input');
@@ -312,11 +307,6 @@ var createBulletInput = function() {
   input.className = 'bullet-point';
   return input;
 }
-
-var filter = function(type) {
-
-}
-
 
 var createListElements = function(listObj) {
   var containerDiv = document.createElement('div');
@@ -348,11 +338,6 @@ var createListObj = function(arrDOMElements) {
   return listObj;
 }
 
-var createDivButtons = function() {
-  
-}
-
-
 var createButtons = function(objType, divToDelete, arrDOMElements ) {
 
   var divButtons = document.createElement('div');
@@ -363,9 +348,7 @@ var createButtons = function(objType, divToDelete, arrDOMElements ) {
   divButtons.appendChild(buttonCancel);
 
   buttonAdd.addEventListener('click', function() {
-
     var someObj;
-
     if (objType === 'text') {
       someObj = createTextObj();
     } else
@@ -378,12 +361,10 @@ var createButtons = function(objType, divToDelete, arrDOMElements ) {
       console.log('check object type!! createButtons function')
       return
     }
-    
+
     writeData(someObj).then(testfunc);
     var cardObj = load(someObj);
-
     placeFirst(cardObj.card);
-
     deleteElement(divToDelete);
     closeModal.click();
   })
@@ -391,7 +372,6 @@ var createButtons = function(objType, divToDelete, arrDOMElements ) {
   buttonCancel.addEventListener('click', function(){
     deleteElement(divToDelete);
   })
-
   return divButtons;
 }
 
