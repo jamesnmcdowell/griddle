@@ -440,9 +440,21 @@ var createSpeechForm = function() {
 
   var titleArea = createTitleInput()
 
+  var progressBar = createProgressBar();
+
   textForm.appendChild(titleArea);
+  textForm.appendChild(progressBar);
   textForm.appendChild(textArea);
   divForm.appendChild(textForm);
 
   return divForm;
+}
+
+var createProgressBar = function() {
+  var progressBar = document.createElement('div');
+  progressBar.className = 'progress';
+  var indeterminate = document.createElement('div');
+  indeterminate.className = 'indeterminate';
+  progressBar.appendChild(indeterminate);
+  return progressBar;
 }
