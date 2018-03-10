@@ -152,6 +152,8 @@ let createTextElements = function(textObj) {
 
 var addTextModal = document.querySelector('#add-text');
 
+//########### ADD TEXT MODAL ######################
+
 addTextModal.addEventListener('click', function() {
 
   var divForm = createTextForm();
@@ -160,8 +162,6 @@ addTextModal.addEventListener('click', function() {
   divForm.appendChild(divButtons);
   divModalContent.appendChild(divForm);
 })
-
-//######################
 
 //create object specifically for image items 
 let createImgObj = function() {
@@ -191,6 +191,8 @@ var divModalContent = document.querySelector('div.modal-content');
 var closeModal = document.querySelector('div.modal-footer>a')
 var addImageModal = document.querySelector('#add-image');
 
+//############### ADD IMG MODAL ##############################
+
 addImageModal.addEventListener('click', function() {
 
   var divForm = createImageForm();
@@ -198,22 +200,6 @@ addImageModal.addEventListener('click', function() {
   divForm.appendChild(divButtons);
   divModalContent.appendChild(divForm);
 })
-
-//######################
-
-
-var createTitleInput = function() {
-  var titleInput = document.createElement('input');
-  titleInput.setAttribute('name', 'addTitle');
-  titleInput.setAttribute('placeholder', 'Add title...');
-  titleInput.className = 'title-input';
-  return titleInput;
-}
-
-var deleteElement = function(element) {
-  element.outerHTML = "";
-  delete element;
-}
 
 var createImageForm = function() {
   var divForm = createElementWithClasses('div', ['div-form']);
@@ -232,6 +218,21 @@ var createImageForm = function() {
   divForm.appendChild(imageForm);
 
   return divForm;
+}
+
+//######### SOME REUSED FUNCTIONS ########################
+
+var createTitleInput = function() {
+  var titleInput = document.createElement('input');
+  titleInput.setAttribute('name', 'addTitle');
+  titleInput.setAttribute('placeholder', 'Add title...');
+  titleInput.className = 'title-input';
+  return titleInput;
+}
+
+var deleteElement = function(element) {
+  element.outerHTML = "";
+  delete element;
 }
 
 var createAddBtn = function() {
@@ -254,7 +255,7 @@ var placeFirst = function(element) {
   itemsContainer.insertBefore(element, firstCard)
 }
 
-//##### This code needs to be converted to new structure above ########
+//##### ADD LIST MODAL #################################
 
 var addListModal = document.querySelector('#add-list');
 
@@ -375,4 +376,53 @@ var createButtons = function(objType, divToDelete, arrDOMElements ) {
   return divButtons;
 }
 
+//##################### SPEECH TO TEXT MODAL #######################
 
+var speechModal = document.querySelector('#speech');
+
+speechModal.addEventListener('click', function() {
+  var divForm = createSpeechForm();
+  var divButtons = createButtons('text', divForm, null)
+
+  divForm.appendChild(divButtons);
+  divModalContent.appendChild(divForm);
+
+  var speechTextArea = divForm.querySelector('textarea');
+
+  var recognition = initRecognition();
+  recognition.start();
+
+  recognition.onresult = function(event) {
+    speechTextArea.textContent = event.results[0][0].transcript;
+    // console.log(event.results[0][0].transcript);
+  };
+})
+
+
+var initRecognition = function() {
+var recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition || window.msSpeechRecognition)();
+recognition.lang = 'en-US';
+recognition.interimResults = false;
+recognition.maxAlternatives = 5;
+return recognition;
+}
+
+var createSpeechForm = function() {
+  var divForm = document.createElement('div');
+  divForm.className = 'div-form';
+  var textForm = document.createElement('form');
+
+  var textArea = document.createElement('textarea');
+  textArea.setAttribute('id', 'speech-form');
+  textArea.setAttribute('name', 'addText');
+  textArea.setAttribute('placeholder', 'Say something...')
+  textArea.className = 'speech-form';
+
+  var titleArea = createTitleInput()
+
+  textForm.appendChild(titleArea);
+  textForm.appendChild(textArea);
+  divForm.appendChild(textForm);
+
+  return divForm;
+}
