@@ -442,11 +442,6 @@ var createSpeechForm = function() {
 
   var progressBar = createProgressBar();
 
-  // <div class="progress">
-  //     <div class="determinate" style="width: 70%"></div>
-  // </div>
-  
-
   textForm.appendChild(titleArea);
   textForm.appendChild(progressBar);
   textForm.appendChild(textArea);
