@@ -90,6 +90,21 @@ ul.bulletpoints > li {
   margin-left: 5%
 }
 
+.card{
+  display: flex;
+  flex-wrap: wrap;  
+  justify-content: space-between;
+  flex: 1 1 100%;
+}
+.card > * {
+  flex: 1 1 100%;
+  
+}
+.card-action {
+  align-self: flex-end;
+  width: 100%;
+}
+
 .filters {
   display: grid;
   justify-items: center;
