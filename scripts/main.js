@@ -27,8 +27,7 @@ let writeData = function(testObj) {
     title: testObj.title,
     content: testObj.content,
     type: testObj.type
-  }).then( function () {
-  });
+  })
 };
 
 //return cardObj with correct type
@@ -40,7 +39,8 @@ let load = function(itemObj) {
   else if (itemObj.type === "image") {
     itemDiv = createImgElements(itemObj);
   }
-  else if (itemObj.type === "list") { 
+  else if (itemObj.type === "list") {
+    itemDiv = createListElements(itemObj); 
   }
   let cardObj = createCard(itemObj, itemDiv);
   return cardObj;
@@ -48,7 +48,7 @@ let load = function(itemObj) {
 
 //render an array of objects
 let render = function(itemsArr) {
-  itemsArr.forEach( function(itemObj, i) {
+  itemsArr.reverse().forEach( function(itemObj, i) {
     let cardObj = load(itemObj);
     itemsContainer.appendChild(cardObj.card);
     cardObj.cta3.addEventListener('click', function(event) {
@@ -114,12 +114,6 @@ var createTextForm = function() {
   divForm.className = 'div-form';
   var textForm = document.createElement('form');
 
-  var input = document.createElement('input');
-  input.setAttribute('id', 'text-form');
-  input.setAttribute('name', 'addText');
-  input.setAttribute('placeholder', 'Type some text...')
-  input.className = 'text-form';
-
   var textArea = document.createElement('textarea');
   textArea.setAttribute('id', 'text-form');
   textArea.setAttribute('name', 'addText');
@@ -158,33 +152,16 @@ let createTextElements = function(textObj) {
 
 var addTextModal = document.querySelector('#add-text');
 
+//########### ADD TEXT MODAL ######################
+
 addTextModal.addEventListener('click', function() {
 
   var divForm = createTextForm();
-  var buttonAdd = createAddBtn();
-  var buttonCancel = createCancelBtn();
+  var divButtons = createButtons('text', divForm, null)
 
-  buttonAdd.addEventListener('click', function() {
-    let textObj = createTextObj();
-    writeData(textObj).then(testfunc);
-    let textDiv = createImgElements(textObj);
-    let cardObj = load(textObj);
-  
-    placeFirst(cardObj.card);
-
-    deleteElement(divForm);
-    closeModal.click();
-  })
-
-  buttonCancel.addEventListener('click', function(){
-    deleteElement(divForm);
-  })
-  divForm.appendChild(buttonAdd);
-  divForm.appendChild(buttonCancel);
+  divForm.appendChild(divButtons);
   divModalContent.appendChild(divForm);
 })
-
-//######################
 
 //create object specifically for image items 
 let createImgObj = function() {
@@ -214,46 +191,15 @@ var divModalContent = document.querySelector('div.modal-content');
 var closeModal = document.querySelector('div.modal-footer>a')
 var addImageModal = document.querySelector('#add-image');
 
+//############### ADD IMG MODAL ##############################
+
 addImageModal.addEventListener('click', function() {
 
   var divForm = createImageForm();
-  var buttonAdd = createAddBtn();
-  var buttonCancel = createCancelBtn();
-
-  buttonAdd.addEventListener('click', function() {
-    let imgObj = createImgObj();
-    writeData(imgObj).then(testfunc);
-    let cardObj = load(imgObj);
-    
-    placeFirst(cardObj.card);
-    deleteElement(divForm);
-    closeModal.click();
-  })
-  
-  buttonCancel.addEventListener('click', function(){
-    deleteElement(divForm);
-  })
-  
-  divForm.appendChild(buttonAdd);
-  divForm.appendChild(buttonCancel);
+  var divButtons = createButtons('image', divForm, null);
+  divForm.appendChild(divButtons);
   divModalContent.appendChild(divForm);
 })
-
-//######################
-
-
-var createTitleInput = function() {
-  var titleInput = document.createElement('input');
-  titleInput.setAttribute('name', 'addTitle');
-  titleInput.setAttribute('placeholder', 'Add title...');
-  titleInput.className = 'title-input';
-  return titleInput;
-}
-
-var deleteElement = function(element) {
-  element.outerHTML = "";
-  delete element;
-}
 
 var createImageForm = function() {
   var divForm = createElementWithClasses('div', ['div-form']);
@@ -272,6 +218,21 @@ var createImageForm = function() {
   divForm.appendChild(imageForm);
 
   return divForm;
+}
+
+//######### SOME REUSED FUNCTIONS ########################
+
+var createTitleInput = function() {
+  var titleInput = document.createElement('input');
+  titleInput.setAttribute('name', 'addTitle');
+  titleInput.setAttribute('placeholder', 'Add title...');
+  titleInput.className = 'title-input';
+  return titleInput;
+}
+
+var deleteElement = function(element) {
+  element.outerHTML = "";
+  delete element;
 }
 
 var createAddBtn = function() {
@@ -294,7 +255,7 @@ var placeFirst = function(element) {
   itemsContainer.insertBefore(element, firstCard)
 }
 
-//##### This code needs to be converted to new structure above ########
+//##### ADD LIST MODAL #################################
 
 var addListModal = document.querySelector('#add-list');
 
@@ -307,25 +268,14 @@ addListModal.addEventListener('click', function() {
 
   var ul = document.createElement('ul')
   ul.className = 'bulletpoints';
-
-  var li = document.createElement('li');
-  var bullet = createBulletInput();
-  arrDOMElements.push(bullet);
+  appendInputLi(ul, arrDOMElements);
 
   var titleInput = createTitleInput();
 
   divForm.appendChild(titleInput);
-  li.appendChild(bullet)
-  ul.appendChild(li);
   divForm.appendChild(ul);
 
-  var divButtons = document.createElement('div');
-  divButtons.className = 'buttons';
-  var buttonAdd = createAddBtn();
-  var buttonCancel = createCancelBtn();
-  divButtons.appendChild(buttonAdd);
-  divButtons.appendChild(buttonCancel);
-
+  var divButtons = createButtons('list', divWrapper, arrDOMElements);
   divWrapper.appendChild(divForm);
   divWrapper.appendChild(divButtons);
   divModalContent.appendChild(divWrapper);
@@ -336,61 +286,20 @@ addListModal.addEventListener('click', function() {
       bullet.focus();
     }
     if(e.keyCode === 13 && e.target.className === 'bullet-point') {
-      console.log(e)
       e.preventDefault();
-
-      var li = document.createElement('li');
-
-      var newBullet = createBulletInput();
-      li.appendChild(newBullet)
-      ul.appendChild(li);
-      newBullet.focus();
-      arrDOMElements.push(newBullet);
+      appendInputLi(ul, arrDOMElements);
     }
   })
-
-
-  buttonAdd.addEventListener('click', function() {
-    var listContent = [];
-    for (var i = 0; i < arrDOMElements.length; i ++) {
-      listContent.push(arrDOMElements[i].value)
-    }
-
-    var listObj = {
-      type: "list",
-      title: titleInput.value,
-      content: listContent
-
-    }
-
-    itemsArr.push(listObj);
-
-    var cardObj = createCard(listObj);
-
-    var contentEl = cardObj.card.querySelector('ul');
-    contentEl.className = 'bulletpoints card-bullets';
-
-    contentEl.innerHTML = '';
-    for (var j = 0; j < listContent.length; j ++) {
-      var li = document.createElement('li');
-      if (listContent[j] !== '')  {
-        li.textContent = listContent[j];
-        contentEl.appendChild(li);
-      }
-    }
-
-    placeFirst(cardObj.card);
-
-    deleteElement(divWrapper);
-    closeModal.click();
-  })
-
-  buttonCancel.addEventListener('click', function(){
-  deleteElement(divWrapper);
-  })
-
 })
 
+var appendInputLi = function(ul, arrOfElements) {
+  var li = document.createElement('li');
+  var newBullet = createBulletInput();
+  li.appendChild(newBullet)
+  ul.appendChild(li);
+  newBullet.focus();
+  arrOfElements.push(newBullet);
+}
 
 var createBulletInput = function() {
   var input = document.createElement('input');
@@ -400,6 +309,140 @@ var createBulletInput = function() {
   return input;
 }
 
-var filter = function(type) {
+var createListElements = function(listObj) {
+  var containerDiv = document.createElement('div');
+  var ul = document.createElement('ul');
+  ul.className = 'bulletpoints card-bullets';
+  for (var j = 0; j < listObj.content.length; j ++) {
+    if (listObj.content[j] !== '')  {
+      var li = document.createElement('li');
+      li.textContent = listObj.content[j];
+      ul.appendChild(li);
+    }
+  }
+  containerDiv.appendChild(ul);
+  return containerDiv;
+}
 
+
+var createListObj = function(arrDOMElements) {
+  var titleInput = document.querySelector('div.list-form>input');
+  var listContents = [];
+  for (var i = 0; i < arrDOMElements.length; i ++) {
+    listContents.push(arrDOMElements[i].value)
+  }
+  var listObj = {
+    type: "list",
+    title: titleInput.value,
+    content: listContents
+  }
+  return listObj;
+}
+
+var createButtons = function(objType, divToDelete, arrDOMElements ) {
+
+  var divButtons = document.createElement('div');
+  divButtons.className = 'buttons';
+  var buttonAdd = createAddBtn();
+  var buttonCancel = createCancelBtn();
+  divButtons.appendChild(buttonAdd);
+  divButtons.appendChild(buttonCancel);
+
+  buttonAdd.addEventListener('click', function() {
+    var someObj;
+    if (objType === 'text') {
+      someObj = createTextObj();
+    } else
+    if (objType === 'list') {
+      someObj = createListObj(arrDOMElements);
+    } else 
+    if (objType === 'image') {
+      someObj = createImgObj();
+    } else { 
+      console.log('check object type!! createButtons function')
+      return
+    }
+
+    writeData(someObj).then(testfunc);
+    var cardObj = load(someObj);
+    placeFirst(cardObj.card);
+    deleteElement(divToDelete);
+    closeModal.click();
+  })
+
+  buttonCancel.addEventListener('click', function(){
+    deleteElement(divToDelete);
+  })
+  return divButtons;
+}
+
+//##################### SPEECH TO TEXT MODAL #######################
+
+var speechModal = document.querySelector('#speech');
+
+speechModal.addEventListener('click', function() {
+  var divForm = createSpeechForm();
+  var divButtons = createButtons('text', divForm, null)
+
+  divForm.appendChild(divButtons);
+  divModalContent.appendChild(divForm);
+
+  var speechTextArea = divForm.querySelector('textarea');
+  var addButton = divButtons.querySelector('button');
+  addButton.textContent = 'End';
+
+  var commands = {
+    'end': function() {
+      annyang.abort();
+      addButton.click();
+    },
+    'cancel': function() {
+      annyang.abort();
+      deleteElement(divForm);
+    },
+    'start over': function() {
+      speechTextArea.textContent = '';
+    }
+  }
+  // annyang.init(commands, true)
+
+  annyang.start()
+
+  annyang.addCommands(commands)
+
+  annyang.addCallback('result', function(phrases) {
+    if (phrases[0] !== ' and' && phrases[0] !== ' end') {
+      speechTextArea.textContent += phrases[0];
+    }
+    // speechTextArea.textContent += phrases[0];
+  })
+})
+
+
+var initRecognition = function() {
+var recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition || window.msSpeechRecognition)();
+recognition.lang = 'en-US';
+recognition.interimResults = false;
+recognition.maxAlternatives = 5;
+return recognition;
+}
+
+var createSpeechForm = function() {
+  var divForm = document.createElement('div');
+  divForm.className = 'div-form';
+  var textForm = document.createElement('form');
+
+  var textArea = document.createElement('textarea');
+  textArea.setAttribute('id', 'speech-form');
+  textArea.setAttribute('name', 'addText');
+  textArea.setAttribute('placeholder', 'Say something...')
+  textArea.className = 'speech-form';
+
+  var titleArea = createTitleInput()
+
+  textForm.appendChild(titleArea);
+  textForm.appendChild(textArea);
+  divForm.appendChild(textForm);
+
+  return divForm;
 }
