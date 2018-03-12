@@ -51,9 +51,6 @@ let render = function(itemsArr) {
   itemsArr.reverse().forEach( function(itemObj, i) {
     let cardObj = load(itemObj);
     itemsContainer.appendChild(cardObj.card);
-    cardObj.cta3.addEventListener('click', function(event) {
-      cardObj.card.remove();
-    });
   })
 };
 
@@ -102,6 +99,11 @@ let createCard = function(itemObj, itemElem) {
     cta2: cardAction2,
     cta3: cardAction3
   };
+
+  cardObj.cta3.addEventListener('click', function(event) {
+    deleteData(itemObj.id);
+    cardObj.card.remove();
+  });
 
   return cardObj;
 };
@@ -404,17 +406,13 @@ speechModal.addEventListener('click', function() {
       speechTextArea.textContent = '';
     }
   }
-  // annyang.init(commands, true)
-
   annyang.start()
-
   annyang.addCommands(commands)
 
   annyang.addCallback('result', function(phrases) {
     if (phrases[0] !== ' and' && phrases[0] !== ' end') {
       speechTextArea.textContent += phrases[0];
     }
-    // speechTextArea.textContent += phrases[0];
   })
 })
 
@@ -457,4 +455,12 @@ var createProgressBar = function() {
   indeterminate.className = 'indeterminate';
   progressBar.appendChild(indeterminate);
   return progressBar;
+}
+
+var deleteData = function(objId) {
+  firebase.database().ref().child(objId).remove();
+}
+
+var deleteAllData = function() {
+  firebase.database().ref().set(null);
 }
