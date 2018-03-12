@@ -83,7 +83,7 @@ let load = function(itemObj) {
 let render = function(itemsArr) {
   itemsArr.reverse().forEach( function(itemObj, i) {
     let cardObj = load(itemObj);
-    // displayedThoughts.push(itemObj);
+     
     itemsContainer.appendChild(cardObj.card);
   })
 };
@@ -206,6 +206,7 @@ var renderFilter = function(event) {
     render(filterThoughts.reverse());
   }
 }
+
 //Selectors for filters
 var textFilterButton = document.querySelector('body > div.filter-wrapper > div > a:nth-child(2) > i');
 textFilterButton.addEventListener('click', function() {
@@ -215,6 +216,7 @@ var imgFilterButton = document.querySelector('body > div.filter-wrapper > div > 
 imgFilterButton.addEventListener('click', function() {
   renderFilter(event);
 });
+
 var listFilterButton = document.querySelector('body > div.filter-wrapper > div > a:nth-child(5) > i');
 listFilterButton.addEventListener('click', function() {
   renderFilter(event);
@@ -249,6 +251,7 @@ let createImgObj = function() {
     content: url
   }
   displayedThoughts.push(imgObj);
+
   return imgObj;
 }
 
