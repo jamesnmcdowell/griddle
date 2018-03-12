@@ -1,11 +1,11 @@
 let itemsContainer = document.querySelector('.items-container');
+var displayedThoughts = [];
 
 document.addEventListener('DOMContentLoaded', function (event) {
   //materialize modal setup
   $('.modal').modal();
   //get data from firebase and render on page
   getData().then(render).then(swappable);
-  
   // The Firebase SDK is initialized and available here!
   //
   // firebase.auth().onAuthStateChanged(user => { });
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 let swappable = function() {
   new window.Draggable.Sortable(document.querySelectorAll('.items-container'), { draggable: '.card' })
   .on('drag:start', function(event) {
-      
+
   })
   .on('drag:move', function(event) {
     console.log('drag:move')
@@ -34,7 +34,7 @@ let swappable = function() {
       let width = event.data.originalSource.offsetWidth;
       let height = event.data.originalSource.offsetHeight;
       console.log(event.data.mirror.offsetWidth);
-                                   
+
   })
   .on('drag:stop',  () => console.log('drag:stop'));
 };
@@ -72,7 +72,7 @@ let load = function(itemObj) {
     itemDiv = createImgElements(itemObj);
   }
   else if (itemObj.type === "list") {
-    itemDiv = createListElements(itemObj); 
+    itemDiv = createListElements(itemObj);
   }
   let cardObj = createCard(itemObj, itemDiv);
   return cardObj;
@@ -82,9 +82,16 @@ let load = function(itemObj) {
 let render = function(itemsArr) {
   itemsArr.reverse().forEach( function(itemObj, i) {
     let cardObj = load(itemObj);
+    displayedThoughts.push(itemObj);
     itemsContainer.appendChild(cardObj.card);
   })
 };
+
+var filter = function(object, type, filterThoughts) {
+  if (object.type === type) {
+    filterThoughts.push(object);
+  }
+}
 
 //dummy function for testing promises
 function testfunc() {
@@ -162,7 +169,7 @@ var createTextForm = function() {
 
   return divForm;
 }
-//create object specifically for text items 
+//create object specifically for text items
 let createTextObj = function() {
   var textForm = document.querySelector('form')
   var text = textForm.addText.value;
@@ -175,7 +182,7 @@ let createTextObj = function() {
   return textObj;
 }
 
-//create element specifically for text items 
+//create element specifically for text items
 let createTextElements = function(textObj) {
   var containerDiv = document.createElement('div');
   var p = document.createElement('p');
@@ -183,6 +190,29 @@ let createTextElements = function(textObj) {
   containerDiv.appendChild(p);
   return containerDiv;
 }
+var renderFilter = function(event) {
+  var filterThoughts = [];
+  var type = event.target.getAttribute('data-filter-type');
+  displayedThoughts.forEach(function(element) {
+    filter(element, type, filterThoughts);
+  })
+  itemsContainer.querySelectorAll(':scope > div').forEach(e => e.remove());
+  render(filterThoughts.reverse());
+}
+//Selectors for filters
+var textFilterButton = document.querySelector('body > div.filter-wrapper > div > a:nth-child(2) > i');
+textFilterButton.addEventListener('click', function() {
+  renderFilter(event);
+});
+var imgFilterButton = document.querySelector('body > div.filter-wrapper > div > a:nth-child(3) > i');
+imgFilterButton.addEventListener('click', function() {
+  renderFilter(event);
+});
+var listFilterButton = document.querySelector('body > div.filter-wrapper > div > a:nth-child(6) > i');
+listFilterButton.addEventListener('click', function() {
+  renderFilter(event);
+});
+
 
 var addTextModal = document.querySelector('#add-text');
 
@@ -197,7 +227,7 @@ addTextModal.addEventListener('click', function() {
   divModalContent.appendChild(divForm);
 })
 
-//create object specifically for image items 
+//create object specifically for image items
 let createImgObj = function() {
   var imageForm = document.querySelector('form')
   var url = imageForm.imageUrl.value;
@@ -210,7 +240,7 @@ let createImgObj = function() {
   return imgObj;
 }
 
-//create element specifically for image items 
+//create element specifically for image items
 let createImgElements = function(imgObj) {
   var containerDiv = document.createElement('div');
   var image = document.createElement('img');
@@ -389,10 +419,10 @@ var createButtons = function(objType, divToDelete, arrDOMElements ) {
     } else
     if (objType === 'list') {
       someObj = createListObj(arrDOMElements);
-    } else 
+    } else
     if (objType === 'image') {
       someObj = createImgObj();
-    } else { 
+    } else {
       console.log('check object type!! createButtons function')
       return
     }
@@ -490,7 +520,13 @@ var createProgressBar = function() {
 }
 
 var deleteData = function(objId) {
+  console.log(objId);
   firebase.database().ref().child(objId).remove();
+  for (i = 0; i < displayedThoughts.length; i++) {
+    if (objId === displayedThoughts[i].id) {
+      displayedThoughts.splice(i, 1);
+    }
+  }
 }
 
 var deleteAllData = function() {
