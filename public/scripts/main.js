@@ -49,6 +49,7 @@ let getData = function() {
       firebaseObj[key]["id"] = key;
       firebaseArr.push(firebaseObj[key]);
     }
+    displayedThoughts = firebaseArr.slice();
     return firebaseArr;
   })
 };
@@ -82,7 +83,7 @@ let load = function(itemObj) {
 let render = function(itemsArr) {
   itemsArr.reverse().forEach( function(itemObj, i) {
     let cardObj = load(itemObj);
-    displayedThoughts.push(itemObj);
+     
     itemsContainer.appendChild(cardObj.card);
   })
 };
@@ -179,6 +180,7 @@ let createTextObj = function() {
     title: title,
     content: text
   }
+  displayedThoughts.push(textObj);
   return textObj;
 }
 
@@ -193,12 +195,18 @@ let createTextElements = function(textObj) {
 var renderFilter = function(event) {
   var filterThoughts = [];
   var type = event.target.getAttribute('data-filter-type');
-  displayedThoughts.forEach(function(element) {
-    filter(element, type, filterThoughts);
-  })
-  itemsContainer.querySelectorAll(':scope > div').forEach(e => e.remove());
-  render(filterThoughts.reverse());
+  if (type === 'reset') {
+    itemsContainer.querySelectorAll(':scope > div').forEach(e => e.remove());
+    render(displayedThoughts);
+  } else {
+      displayedThoughts.forEach(function(element) {
+      filter(element, type, filterThoughts);
+    })
+    itemsContainer.querySelectorAll(':scope > div').forEach(e => e.remove());
+    render(filterThoughts.reverse());
+  }
 }
+
 //Selectors for filters
 var textFilterButton = document.querySelector('body > div.filter-wrapper > div > a:nth-child(2) > i');
 textFilterButton.addEventListener('click', function() {
@@ -208,8 +216,13 @@ var imgFilterButton = document.querySelector('body > div.filter-wrapper > div > 
 imgFilterButton.addEventListener('click', function() {
   renderFilter(event);
 });
-var listFilterButton = document.querySelector('body > div.filter-wrapper > div > a:nth-child(6) > i');
+
+var listFilterButton = document.querySelector('body > div.filter-wrapper > div > a:nth-child(5) > i');
 listFilterButton.addEventListener('click', function() {
+  renderFilter(event);
+});
+var restoreFilterButton = document.querySelector('body > div.filter-wrapper > div > a:nth-child(6) > i');
+restoreFilterButton.addEventListener('click', function() {
   renderFilter(event);
 });
 
@@ -237,6 +250,8 @@ let createImgObj = function() {
     title: title,
     content: url
   }
+  displayedThoughts.push(imgObj);
+
   return imgObj;
 }
 
@@ -400,6 +415,7 @@ var createListObj = function(arrDOMElements) {
     title: titleInput.value,
     content: listContents
   }
+  displayedThoughts.push(listObj);
   return listObj;
 }
 
