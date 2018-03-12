@@ -16,25 +16,30 @@ document.addEventListener('DOMContentLoaded', function (event) {
   try {
     let app = firebase.app();
     let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
-    document.getElementById('load').innerHTML = `Firebase SDK loaded with ${features.join(', ')}`;
+    console.log( `Firebase SDK loaded with ${features.join(', ')}`);
   } catch (e) {
     console.error(e);
-    document.getElementById('load').innerHTML = 'Error loading the Firebase SDK, check the console.';
+    console.log('Error loading the Firebase SDK, check the console.');
   }
 });
 //draggable JS library
 let swappable = function() {
   new window.Draggable.Sortable(document.querySelectorAll('.items-container'), { draggable: '.card' })
   .on('drag:start', function(event) {
-
+//    let width = event.data.originalSource.offsetWidth;
+//    console.log(`initial width ${width}`);
   })
   .on('drag:move', function(event) {
     console.log('drag:move')
     console.log(event.data);
-      let width = event.data.originalSource.offsetWidth;
-      let height = event.data.originalSource.offsetHeight;
-      console.log(event.data.mirror.offsetWidth);
-
+    let mirrorElem = event.data.mirror;
+    let widthOrig = event.data.source.offsetWidth;
+    let heightOrig = event.data.source.offsetHeight;
+    let widthMirror = event.data.mirror.offsetWidth;
+    let heightMirror = event.data.mirror.offsetHeight;
+    console.log(`initial width ${widthOrig}`);
+    console.log(`mirror width ${widthMirror}`);
+    mirrorElem.style.width = widthOrig;
   })
   .on('drag:stop',  () => console.log('drag:stop'));
 };
