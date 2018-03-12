@@ -8,15 +8,20 @@ var tweet = function(event) {
         "statuses_update",
         {"status": status},
         function (reply) {
-          resolve(reply);
-          console.log(reply);
+          if (reply.httpstatus >= 300) {
+            reject(reply);
+            console.log(reply);
+          } else {
+            resolve(reply);
+            console.log(reply);
+          }
         }
       );
     })
     postPromise.then(function(value) {
-      currentCard.classList.replace('blue-grey','twitter-blue');
+      currentCard.style.backgroundColor = '#00aced';
     })
     postPromise.catch(function(value) {
-      currentCard.classList.replace('blue-grey','failure-call');
+      currentCard.style.backgroundColor = '#ed002a';
     })
 }
