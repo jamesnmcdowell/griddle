@@ -2,7 +2,6 @@ var tweet = function(event) {
     var target = event.target;
     var currentCard = target.closest('.card')
     var status = currentCard.querySelector('p').textContent;
-
     var postPromise = new Promise (function(resolve, reject) {
       cb.__call(
         "statuses_update",
