@@ -167,6 +167,7 @@ let createTextObj = function() {
     title: title,
     content: text
   }
+  displayedThoughts.push(textObj);
   return textObj;
 }
 
@@ -234,6 +235,7 @@ let createImgObj = function() {
     title: title,
     content: url
   }
+  displayedThoughts.push(imgObj);
   return imgObj;
 }
 
@@ -397,6 +399,7 @@ var createListObj = function(arrDOMElements) {
     title: titleInput.value,
     content: listContents
   }
+  displayedThoughts.push(listObj);
   return listObj;
 }
 
