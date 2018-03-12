@@ -100,6 +100,9 @@ ul.bulletpoints > li {
   flex: 1 1 100%;
   
 }
+.card img {
+  width: 100%;
+}
 .card-action {
   align-self: flex-end;
   width: 100%;
@@ -117,6 +120,16 @@ ul.bulletpoints > li {
   display: grid;
   justify-items: end;
   margin-right: 15px;
+}
+
+.draggable-source--is-dragging {
+  opacity: .7;
+}
+.card.draggable-mirror{
+  background-color: rebeccapurple !important;
+}
+.card {
+background-color: #3079A7;
 }
 
 @media only screen and (min-width: 1200px) {

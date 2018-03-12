@@ -4,8 +4,26 @@ document.addEventListener('DOMContentLoaded', function (event) {
   //materialize modal setup
   $('.modal').modal();
   //get data from firebase and render on page
-  getData().then(render);
+  getData().then(render).then(swappable);
+  
+  
 });
+//draggable JS library
+let swappable = function() {
+  new window.Draggable.Sortable(document.querySelectorAll('.items-container'), { draggable: '.card' })
+  .on('drag:start', function(event) {
+      
+  })
+  .on('drag:move', function(event) {
+    console.log('drag:move')
+    console.log(event.data);
+      let width = event.data.originalSource.offsetWidth;
+      let height = event.data.originalSource.offsetHeight;
+      console.log(event.data.mirror.offsetWidth);
+                                   
+  })
+  .on('drag:stop',  () => console.log('drag:stop'));
+};
 
 //read data to firebase
 let getData = function() {
@@ -74,7 +92,7 @@ var createElementWithClasses = function(element, classArray) {
 //create card element
 let createCard = function(itemObj, itemElem) {
   let cardDiv = createElementWithClasses('div', ['grid-item']);
-  let cardWrapperDiv = createElementWithClasses('div', ['card', 'blue-grey', 'darken-1']);
+  let cardWrapperDiv = createElementWithClasses('div', ['card']);
   let cardContentDiv = createElementWithClasses('div', ["card-content", "white-text"]);
   let cardTitle = createElementWithClasses('span', ['card-title']);
   let cardActionDiv = createElementWithClasses('div', ['card-action']);
@@ -181,8 +199,8 @@ let createImgElements = function(imgObj) {
   var containerDiv = document.createElement('div');
   var image = document.createElement('img');
   image.setAttribute('src', imgObj.content);
-  image.style.maxWidth = '90%';
-  image.style.maxHeight = '80%';
+//  image.style.maxWidth = '90%';
+//  image.style.maxHeight = '80%';
   containerDiv.appendChild(image);
   return containerDiv;
 }
