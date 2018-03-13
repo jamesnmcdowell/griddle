@@ -1,6 +1,6 @@
 let itemsContainer = document.querySelector('.items-container');
-var displayedThoughts = [];
-var order = 0
+var displayedThoughts = []; // Global Var 1
+var order = 0 // Global Var 2
 
 document.addEventListener('DOMContentLoaded', function (event) {
   //materialize modal setup
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
    firebase.database().ref('/path/to/ref').on('value', snapshot => { });
    firebase.messaging().requestPermission().then(() => { });
    firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
- 
+
   try {
     let app = firebase.app();
     let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
@@ -36,7 +36,7 @@ let swappable = function() {
   })
   .on('drag:move', function(event) {
   })
-  .on('drag:stop',  () => /*reOrderThoughts(document.querySelectorAll('.card'))*/console.log('drag-stopped'));
+  .on('drag:stop',  () => reOrderThoughts(document.querySelectorAll('.card')));
 };
 
 //read data to firebase
@@ -91,7 +91,7 @@ let load = function(itemObj) {
 
 //render an array of objects
 let render = function(itemsArr) {
-  itemsArr.reverse().forEach( function(itemObj, i) {
+  itemsArr.forEach( function(itemObj, i) {
     let cardObj = load(itemObj);
 
     itemsContainer.appendChild(cardObj.card);
@@ -120,16 +120,39 @@ var getOrder = function() {
 
 var reOrderThoughts = function(thoughts) {
   var order = 0
+  var listOfIds = []
   var cards = document.querySelectorAll('.card');
   cards.forEach(function(card) {
-    var thought = displayedThoughts.find(function(thought) {
+    console.log(card);
+    if (card.hasAttribute('aria-grabbed')) {
+      var thought = displayedThoughts.find(function(thought) {
       return card.dataset.id === thought.id;
-    })
+      })
+    // console.log(thought.order);
     thought.order = order;
-    console.log(card)
-    console.log(order);
+    //Updating Order in Firebase
+    var db = firebase.database();
+    db.ref(thought.id + '/order').set(String(order));
+    listOfIds.push(thought.id);
+    console.log(listOfIds);
     order += 1;
-  })
+    }
+    else if (card.classList.contains('draggable-mirror') || listOfIds.includes(card.dataset.id)) {
+      console.log('mirror card');
+    } else {
+        var thought = displayedThoughts.find(function(thought) {
+        return card.dataset.id === thought.id;
+        })
+      // console.log(thought.order);
+      thought.order = order;
+      //Updating Order in Firebase
+      var db = firebase.database();
+      db.ref(thought.id + '/order').set(String(order));
+      listOfIds.push(thought.id);
+      console.log(listOfIds);
+      order += 1;
+    }
+  });
 }
 
 var addDataIdAttribute = function(card, object) {
@@ -189,7 +212,7 @@ let createCard = function(itemObj, itemElem) {
   cardObj.cta1.addEventListener('click', function(e) {
     editData(itemObj, cardObj);
   });
-  
+
   cardObj.cta3.addEventListener('click', function(event) {
 //    event.preventDefault();
     deleteData(itemObj.id);
@@ -502,7 +525,7 @@ var createButtons = function(objType, divToDelete ) {
     }
 
     writeData(someObj).then(testfunc);
-    
+
   })
 
   buttonCancel.addEventListener('click', function(){
