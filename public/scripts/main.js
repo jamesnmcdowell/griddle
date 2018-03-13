@@ -24,22 +24,25 @@ document.addEventListener('DOMContentLoaded', function (event) {
 });
 //draggable JS library
 let swappable = function() {
-  new window.Draggable.Sortable(document.querySelectorAll('.items-container'), { draggable: '.card' })
+  new window.Draggable.Sortable(document.querySelectorAll('.items-container'), { draggable: '.card', constrainDimensions: 'true', swapAnimation: {
+    duration: 200,
+    easingFunction: 'ease-in-out',
+  }})
   .on('drag:start', function(event) {
-//    let width = event.data.originalSource.offsetWidth;
-//    console.log(`initial width ${width}`);
+    event.data.mirror.style.width = `${event.data.source.offsetWidth}px`;
+    event.data.mirror.style.height = `${event.data.source.offsetHeight}px`;
   })
   .on('drag:move', function(event) {
-    console.log('drag:move')
-    console.log(event.data);
-    let mirrorElem = event.data.mirror;
-    let widthOrig = event.data.source.offsetWidth;
-    let heightOrig = event.data.source.offsetHeight;
-    let widthMirror = event.data.mirror.offsetWidth;
-    let heightMirror = event.data.mirror.offsetHeight;
-    console.log(`initial width ${widthOrig}`);
-    console.log(`mirror width ${widthMirror}`);
-    mirrorElem.style.width = widthOrig;
+//    console.log('drag:move')
+//    console.log(event.data);
+//    let mirrorElem = event.data.mirror;
+//    let widthOrig = event.data.source.offsetWidth;
+//    let heightOrig = event.data.source.offsetHeight;
+//    let widthMirror = event.data.mirror.offsetWidth;
+//    let heightMirror = event.data.mirror.offsetHeight;
+//    console.log(`initial width ${widthOrig}`);
+//    console.log(`mirror width ${widthMirror}`);
+//    mirrorElem.style.width = widthOrig;
   })
   .on('drag:stop',  () => console.log('drag:stop'));
 };
@@ -145,7 +148,8 @@ let createCard = function(itemObj, itemElem) {
     cta3: cardAction3
   };
 
-  cardObj.cta3.addEventListener('click', function(event) {
+  cardObj.cta3.addEventListener('mousedown', function(event) {
+    event.preventDefault();
     deleteData(itemObj.id);
     cardObj.card.remove();
   });
