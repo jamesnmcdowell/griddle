@@ -1,5 +1,6 @@
 let itemsContainer = document.querySelector('.items-container');
 var displayedThoughts = [];
+var order = 0
 
 document.addEventListener('DOMContentLoaded', function (event) {
   //materialize modal setup
@@ -8,11 +9,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
   getData().then(render).then(swappable);
   // The Firebase SDK is initialized and available here!
   //
+
    firebase.auth().onAuthStateChanged(user => { });
    firebase.database().ref('/path/to/ref').on('value', snapshot => { });
    firebase.messaging().requestPermission().then(() => { });
    firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-  
+ 
   try {
     let app = firebase.app();
     let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
@@ -34,7 +36,7 @@ let swappable = function() {
   })
   .on('drag:move', function(event) {
   })
-  .on('drag:stop',  () => console.log('drag:stop'));
+  .on('drag:stop',  () => /*reOrderThoughts(document.querySelectorAll('.card'))*/console.log('drag-stopped'));
 };
 
 //read data to firebase
@@ -47,7 +49,9 @@ let getData = function() {
 //      firebaseObj[key]["id"] = key;
       firebaseArr.push(firebaseObj[key]);
     }
+    orderThoughts(firebaseArr);
     displayedThoughts = firebaseArr.slice();
+    order = getOrder()
     return firebaseArr;
   })
 };
@@ -60,7 +64,8 @@ let writeData = function(testObj) {
     id: id,
     title: testObj.title,
     content: testObj.content,
-    type: testObj.type
+    type: testObj.type,
+    order: testObj.order,
   };
   let promise = x.set(setObj).then(function() {
     return setObj;
@@ -88,7 +93,7 @@ let load = function(itemObj) {
 let render = function(itemsArr) {
   itemsArr.reverse().forEach( function(itemObj, i) {
     let cardObj = load(itemObj);
-     
+
     itemsContainer.appendChild(cardObj.card);
   })
 };
@@ -107,6 +112,37 @@ function testfunc(data) {
   deleteDivForm();
   closeModal.click();
 }
+//Order functions
+var getOrder = function() {
+  var order = displayedThoughts.length;
+  return order;
+}
+
+var reOrderThoughts = function(thoughts) {
+  var order = 0
+  var cards = document.querySelectorAll('.card');
+  cards.forEach(function(card) {
+    var thought = displayedThoughts.find(function(thought) {
+      return card.dataset.id === thought.id;
+    })
+    thought.order = order;
+    console.log(card)
+    console.log(order);
+    order += 1;
+  })
+}
+
+var addDataIdAttribute = function(card, object) {
+  card.setAttribute('data-id', object.id );
+}
+
+var orderThoughts = function(thoughts) {
+  thoughts.sort(function(a, b){
+    // console.log(a.order);
+    return a.order-b.order
+  })
+}
+
 
 //########################
 var createElementWithClasses = function(element, classArray) {
@@ -124,6 +160,7 @@ let createCard = function(itemObj, itemElem) {
   let cardContentDiv = createElementWithClasses('div', ["card-content", "white-text"]);
   let cardTitle = createElementWithClasses('span', ['card-title']);
   let cardActionDiv = createElementWithClasses('div', ['card-action']);
+  addDataIdAttribute(cardWrapperDiv, itemObj);
   let cardAction1 = document.createElement('a');
   let cardAction2 = document.createElement('a');
   let cardAction3 = document.createElement('a');
@@ -148,7 +185,7 @@ let createCard = function(itemObj, itemElem) {
     cta2: cardAction2,
     cta3: cardAction3
   };
-  
+
   cardObj.cta1.addEventListener('click', function(e) {
     editData(itemObj, cardObj);
   });
@@ -192,8 +229,10 @@ let createTextObj = function() {
   var textObj = {
     type: 'text',
     title: title,
-    content: text
+    content: text,
+    order: getOrder(),
   }
+  order += 1;
   displayedThoughts.push(textObj);
   return textObj;
 }
@@ -262,8 +301,10 @@ let createImgObj = function() {
   var imgObj = {
     type: 'image',
     title: title,
-    content: url
+    content: url,
+    order: getOrder(),
   }
+  order += 1;
   displayedThoughts.push(imgObj);
 
   return imgObj;
@@ -428,8 +469,10 @@ var createListObj = function() {
   var listObj = {
     type: "list",
     title: titleInput.value,
-    content: listContents
+    content: listContents,
+    order: getOrder()
   }
+  order += 1;
   displayedThoughts.push(listObj);
   return listObj;
 }
@@ -555,7 +598,7 @@ var deleteAllData = function() {
 var editData = function(itemObj, cardObj) {
   if (itemObj.type === 'text') {
     editText(itemObj, cardObj);
-  } else 
+  } else
   if (itemObj.type === 'image') {
     editImage(itemObj, cardObj);
   } else
@@ -627,4 +670,3 @@ var deleteDivForm = function() {
     divForm.outerHTML = "";
   }
 }
-
