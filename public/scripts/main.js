@@ -147,10 +147,14 @@ let createCard = function(itemObj, itemElem) {
     cta2: cardAction2,
     cta3: cardAction3
   };
+  
+  cardObj.cta1.addEventListener('click', function(e) {
+    editData(itemObj, cardObj);
+  });
 
 
-  cardObj.cta3.addEventListener('mousedown', function(event) {
-    event.preventDefault();
+  cardObj.cta3.addEventListener('click', function(event) {
+//    event.preventDefault();
     deleteData(itemObj.id);
     cardObj.card.remove();
   });
