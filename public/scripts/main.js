@@ -223,9 +223,9 @@ let createCard = function(itemObj, itemElem) {
     cardObj.card.remove();
   });
 
-  cardObj.cta4.addEventListener('click', function(e) {
+  cardObj.cta4.addEventListener('click', function(event) {
     if (itemObj.type === 'text') {
-      postOnFB(itemObj.content);
+      postOnFB(itemObj.content, event);
     }
   })
 
