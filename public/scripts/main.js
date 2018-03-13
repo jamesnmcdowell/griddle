@@ -8,10 +8,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
   getData().then(render).then(swappable);
   // The Firebase SDK is initialized and available here!
   //
-  // firebase.auth().onAuthStateChanged(user => { });
-  // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-  // firebase.messaging().requestPermission().then(() => { });
-  // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
+   firebase.auth().onAuthStateChanged(user => { });
+   firebase.database().ref('/path/to/ref').on('value', snapshot => { });
+   firebase.messaging().requestPermission().then(() => { });
+   firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
   
   try {
     let app = firebase.app();
@@ -33,16 +33,6 @@ let swappable = function() {
     event.data.mirror.style.height = `${event.data.source.offsetHeight}px`;
   })
   .on('drag:move', function(event) {
-//    console.log('drag:move')
-//    console.log(event.data);
-//    let mirrorElem = event.data.mirror;
-//    let widthOrig = event.data.source.offsetWidth;
-//    let heightOrig = event.data.source.offsetHeight;
-//    let widthMirror = event.data.mirror.offsetWidth;
-//    let heightMirror = event.data.mirror.offsetHeight;
-//    console.log(`initial width ${widthOrig}`);
-//    console.log(`mirror width ${widthMirror}`);
-//    mirrorElem.style.width = widthOrig;
   })
   .on('drag:stop',  () => console.log('drag:stop'));
 };
@@ -54,7 +44,7 @@ let getData = function() {
   return firebaseRef.once('value').then(function(snapshot) {
     let firebaseObj = snapshot.val();
     for (key in firebaseObj) {
-      firebaseObj[key]["id"] = key;
+//      firebaseObj[key]["id"] = key;
       firebaseArr.push(firebaseObj[key]);
     }
     displayedThoughts = firebaseArr.slice();
@@ -64,11 +54,18 @@ let getData = function() {
 
 //write data to firebase
 let writeData = function(testObj) {
-  return firebase.database().ref().push().set({
+  let x = firebase.database().ref().push();
+  let id = x.getKey();
+  let setObj = {
+    id: id,
     title: testObj.title,
     content: testObj.content,
     type: testObj.type
-  })
+  };
+  let promise = x.set(setObj).then(function() {
+    return setObj;
+  });
+  return promise;
 };
 
 //return cardObj with correct type
@@ -103,8 +100,12 @@ var filter = function(object, type, filterThoughts) {
 }
 
 //dummy function for testing promises
-function testfunc() {
+function testfunc(data) {
   console.log('you added something!');
+  var cardObj = load(data);
+  placeFirst(cardObj.card);
+  deleteDivForm();
+  closeModal.click();
 }
 
 //########################
@@ -151,8 +152,7 @@ let createCard = function(itemObj, itemElem) {
   cardObj.cta1.addEventListener('click', function(e) {
     editData(itemObj, cardObj);
   });
-
-
+  
   cardObj.cta3.addEventListener('click', function(event) {
 //    event.preventDefault();
     deleteData(itemObj.id);
@@ -459,10 +459,7 @@ var createButtons = function(objType, divToDelete ) {
     }
 
     writeData(someObj).then(testfunc);
-    var cardObj = load(someObj);
-    placeFirst(cardObj.card);
-    deleteDivForm();
-    closeModal.click();
+    
   })
 
   buttonCancel.addEventListener('click', function(){
@@ -617,10 +614,8 @@ var editList = function(itemObj, cardObj) {
 
   var buttonAdd = document.querySelector('#add');
   buttonAdd.addEventListener('click', function() {
-    console.log(itemObj)
     deleteData(itemObj.id);
     cardObj.card.remove();
-    console.log(cardObj)
     console.log('should be deleted')
     //add position
   })
