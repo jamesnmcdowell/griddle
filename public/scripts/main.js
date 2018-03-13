@@ -91,7 +91,6 @@ let load = function(itemObj) {
 let render = function(itemsArr) {
   itemsArr.reverse().forEach( function(itemObj, i) {
     let cardObj = load(itemObj);
-     
     itemsContainer.appendChild(cardObj.card);
   })
 };
@@ -126,26 +125,32 @@ let createCard = function(itemObj, itemElem) {
   let cardAction1 = document.createElement('a');
   let cardAction2 = document.createElement('a');
   let cardAction3 = document.createElement('a');
+  let cardAction4 = document.createElement('a');
 
   cardContentDiv.appendChild(cardTitle);
   cardActionDiv.appendChild(cardAction1);
   cardActionDiv.appendChild(cardAction2);
   cardActionDiv.appendChild(cardAction3);
+  cardActionDiv.appendChild(cardAction4);
   cardWrapperDiv.appendChild(cardContentDiv);
   cardWrapperDiv.appendChild(cardActionDiv);
 
   cardTitle.textContent = itemObj.title;
   cardContentDiv.appendChild(itemElem);
   cardAction1.textContent = `Edit`;
+  // cardAction1.setAttribute('href', '#modal1');
+  // cardAction1.className = 'modal-trigger'
   cardAction2.textContent = "Tweet";
   cardAction3.textContent = "Delete";
+  cardAction4.textContent = 'FBpost'
   cardAction2.addEventListener('click', tweet);
 
   let cardObj = {
     card: cardWrapperDiv,
     cta1: cardAction1,
     cta2: cardAction2,
-    cta3: cardAction3
+    cta3: cardAction3,
+    cta4: cardAction4
   };
   
   cardObj.cta1.addEventListener('click', function(e) {
@@ -154,10 +159,15 @@ let createCard = function(itemObj, itemElem) {
 
 
   cardObj.cta3.addEventListener('click', function(event) {
-//    event.preventDefault();
     deleteData(itemObj.id);
     cardObj.card.remove();
   });
+
+  cardObj.cta4.addEventListener('click', function(e) {
+    if (itemObj.type === 'text') {
+      postOnFB(itemObj.content);
+    }
+  })
 
   return cardObj;
 };
@@ -206,6 +216,7 @@ let createTextElements = function(textObj) {
   containerDiv.appendChild(p);
   return containerDiv;
 }
+
 var renderFilter = function(event) {
   var filterThoughts = [];
   var type = event.target.getAttribute('data-filter-type');
