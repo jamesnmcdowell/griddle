@@ -18,7 +18,7 @@ var tweet = function(event) {
       );
     })
     postPromise.then(function(value) {
-      currentCard.style.backgroundColor = 'gray'
+      currentCard.style.backgroundColor = 'white'
       currentCard.style.backgroundImage = 'url("https://www.mutesix.com/hs-fs/hubfs/Twitter%20Ads.png?width=128&name=Twitter%20Ads.png")';
       currentCard.style.backgroundRepeat = 'no-repeat';
       currentCard.style.backgroundSize = 'contain';

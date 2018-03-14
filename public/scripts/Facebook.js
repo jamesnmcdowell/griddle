@@ -32,9 +32,9 @@ var post = function(content, event) {
         // console.log(response);
         if (response.id) {
             console.log("posted to FB");
-            currentCard.style.backgroundColor = 'gray'
-            currentCard.style.backgroundImage = 'url("https://www.cooldavis.org/wp-content/uploads/2017/08/Facebook.png")';
-            currentCard.style.backgroundRepeat = 'repeat';
+            currentCard.style.backgroundColor = 'white'
+            currentCard.style.backgroundImage = 'url("https://www.shareicon.net/data/128x128/2015/09/14/100981_stamp_256x256.png")';
+            currentCard.style.backgroundRepeat = 'no-repeat';
             currentCard.style.backgroundSize = 'contain';
         } else {
             console.log('FAILED to post to FB');
