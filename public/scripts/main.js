@@ -10,10 +10,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
   // The Firebase SDK is initialized and available here!
   //
 
-   firebase.auth().onAuthStateChanged(user => { });
+//   firebase.auth().onAuthStateChanged(user => { });
    firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-   firebase.messaging().requestPermission().then(() => { });
-   firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
+//   firebase.messaging().requestPermission().then(() => { });
+//   firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
 
   try {
     let app = firebase.app();
@@ -179,7 +179,7 @@ var createElementWithClasses = function(element, classArray) {
 let createCard = function(itemObj, itemElem) {
   let cardDiv = createElementWithClasses('div', ['grid-item']);
   let cardWrapperDiv = createElementWithClasses('div', ['card']);
-  let cardContentDiv = createElementWithClasses('div', ["card-content", "white-text"]);
+  let cardContentDiv = createElementWithClasses('div', ["card-content"]);
   let cardTitle = createElementWithClasses('span', ['card-title']);
   let cardActionDiv = createElementWithClasses('div', ['card-action']);
   addDataIdAttribute(cardWrapperDiv, itemObj);
@@ -218,7 +218,8 @@ let createCard = function(itemObj, itemElem) {
     editData(itemObj, cardObj);
   });
 
-  cardObj.cta3.addEventListener('click', function(event) {
+  cardObj.cta3.addEventListener('mousedown', function(event) {
+    event.preventDefault();
     deleteData(itemObj.id);
     cardObj.card.remove();
   });
