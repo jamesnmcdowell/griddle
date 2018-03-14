@@ -18,7 +18,10 @@ var tweet = function(event) {
       );
     })
     postPromise.then(function(value) {
-      currentCard.style.backgroundColor = '#00aced';
+      currentCard.style.backgroundColor = 'white'
+      currentCard.style.backgroundImage = 'url("https://www.mutesix.com/hs-fs/hubfs/Twitter%20Ads.png?width=128&name=Twitter%20Ads.png")';
+      currentCard.style.backgroundRepeat = 'no-repeat';
+      currentCard.style.backgroundSize = 'contain';
     })
     postPromise.catch(function(value) {
       currentCard.style.backgroundColor = '#ed002a';

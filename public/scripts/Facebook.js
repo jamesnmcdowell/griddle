@@ -25,21 +25,31 @@ var login = function() {
     })
 }
 
-var post = function(content) {
+var post = function(content, event) {
+    var target = event.target;
+    var currentCard = target.closest('.card')
     FB.api('me/feed', 'post', {message: content}, function(response) {
-        console.log(response);
-        console.log('you posted something. ?');
+        // console.log(response);
+        if (response.id) {
+            console.log("posted to FB");
+            currentCard.style.backgroundColor = 'white'
+            currentCard.style.backgroundImage = 'url("https://www.shareicon.net/data/128x128/2015/09/14/100981_stamp_256x256.png")';
+            currentCard.style.backgroundRepeat = 'no-repeat';
+            currentCard.style.backgroundSize = 'contain';
+        } else {
+            console.log('FAILED to post to FB');
+            currentCard.style.backgroundColor = '#ed002a';
+        }
+        
     })
 }
 
-var postOnFB = function(content) {
+var postOnFB = function(content, event) {
     if (!loggedIn) {
         login().then(function() {
-            console.log("i'm inside")
-            console.log(content)
-            post(content)
+            post(content, event)
         });
-    } else { post(content) }
+    } else { post(content, event) }
 }
 
 var email1 = 'kulpkdejda_1520943728@tfbnw.net';
