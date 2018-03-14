@@ -85,6 +85,9 @@ let load = function(itemObj) {
   else if (itemObj.type === "list") {
     itemDiv = createListElements(itemObj);
   }
+  else if (itemObj.type === 'video') {
+    itemDiv = createVideoElements(itemObj);
+  }
   let cardObj = createCard(itemObj, itemDiv);
   return cardObj;
 };
@@ -531,6 +534,9 @@ var createButtons = function(objType, divToDelete ) {
     } else
     if (objType === 'image') {
       someObj = createImgObj();
+    } else
+    if (objType === 'video') {
+      someObj = createVideoObj();
     } else {
       console.log('check object type!! createButtons function')
       return
@@ -704,4 +710,64 @@ var deleteDivForm = function() {
   if (divForm) {
     divForm.outerHTML = "";
   }
+}
+
+var addVideoModal = document.querySelector('#add-video')
+
+addVideoModal.addEventListener('click', function() {
+
+  var divForm = createVideoForm();
+  var divButtons = createButtons('video', divForm);
+  divForm.appendChild(divButtons);
+  divModalContent.appendChild(divForm);
+})
+
+
+var createVideoForm = function() {
+  var divForm = createElementWithClasses('div', ['div-form']);
+  var videoForm = document.createElement('form');
+
+  var input = document.createElement('input');
+  input.setAttribute('id', 'video-form');
+  input.setAttribute('name', 'videoUrl');
+  input.setAttribute('placeholder', 'Enter url here...')
+  input.className = 'url-video-form';
+
+  var titleArea = createTitleInput()
+
+  videoForm.appendChild(titleArea);
+  videoForm.appendChild(input);
+  divForm.appendChild(videoForm);
+
+  return divForm;
+}
+
+let createVideoObj = function() {
+  var videoForm = document.querySelector('form')
+  var url = videoForm.videoUrl.value;
+  url += '?rel=0';
+  var title = videoForm.addTitle.value;
+  var videoObj = {
+    type: 'video',
+    title: title,
+    content: url,
+    order: getOrder(),
+  }
+  order += 1;
+  displayedThoughts.push(videoObj);
+
+  return videoObj;
+}
+
+let createVideoElements = function(videoObj) {
+  var containerDiv = document.createElement('div');
+  containerDiv.className = 'video-container';
+  var iframe = document.createElement('iframe');
+  iframe.setAttribute('src', videoObj.content);
+  iframe.setAttribute('frameborder', "0");
+  iframe.setAttribute('allowfullscreen', '');
+  iframe.style.maxWidth = '100%';
+  iframe.style.maxHeight = '100%';
+  containerDiv.appendChild(iframe);
+  return containerDiv;
 }
