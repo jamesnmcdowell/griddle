@@ -1,12 +1,19 @@
 let itemsContainer = document.querySelector('.items-container');
 var displayedThoughts = []; // Global Var 1
 var order = 0 // Global Var 2
+let secondTime = false;
+let sortable;
+
+let extractSortable = function(data) {
+  sortable = data;
+  
+}
 
 document.addEventListener('DOMContentLoaded', function (event) {
   //materialize modal setup
   $('.modal').modal();
   //get data from firebase and render on page
-  getData().then(render).then(swappable);
+  getData().then(render).then(swappable).then(extractSortable);
   // The Firebase SDK is initialized and available here!
   //
 
@@ -26,17 +33,50 @@ document.addEventListener('DOMContentLoaded', function (event) {
 });
 //draggable JS library
 let swappable = function() {
-  new window.Draggable.Sortable(document.querySelectorAll('.items-container'), { draggable: '.card', constrainDimensions: 'true', swapAnimation: {
-    duration: 200,
-    easingFunction: 'ease-in-out',
-  }})
+  
+  var container, options, sortable;
+  container = document.querySelectorAll('.items-container');
+  options = {
+    draggable: '.card',
+    constrainDimensions: 'true',
+//    swapAnimation: {
+//      duration: 800,
+//      easingFunction: 'ease-in-out',
+//    },
+//    plugins: [Plugins.SwapAnimation],
+  };
+  
+  sortable = new Draggable.Sortable(container, options)
   .on('drag:start', function(event) {
     event.data.mirror.style.width = `${event.data.source.offsetWidth}px`;
     event.data.mirror.style.height = `${event.data.source.offsetHeight}px`;
   })
   .on('drag:move', function(event) {
   })
-  .on('drag:stop',  () => reOrderThoughts(document.querySelectorAll('.card')));
+  .on('drag:stop',  function() {} )
+  .on('sortable:stop', function(event) {
+    console.log("sorted stop");
+    reOrderThoughts(document.querySelectorAll('.card'))
+  });
+  
+//  if (secondTime === true ) {
+//   sortable.destroy(); 
+//  }
+//  sortable = new Draggable.Sortable(container, options)
+//  .on('drag:start', function(event) {
+//    event.data.mirror.style.width = `${event.data.source.offsetWidth}px`;
+//    event.data.mirror.style.height = `${event.data.source.offsetHeight}px`;
+//  })
+//  .on('drag:move', function(event) {
+//  })
+//  .on('drag:stop',  function() {} )
+//  .on('sortable:stop', function(event) {
+//    console.log("sorted stop");
+//    reOrderThoughts(document.querySelectorAll('.card'))
+//  });
+//  
+  return sortable;
+  
 };
 
 //read data to firebase
@@ -109,10 +149,19 @@ var filter = function(object, type, filterThoughts) {
 //dummy function for testing promises
 function testfunc(data) {
   console.log('you added something!');
-  var cardObj = load(data);
-  placeFirst(cardObj.card);
+//  var cardObj = load(data);
+//  placeFirst(cardObj.card);
   deleteDivForm();
   closeModal.click();
+  
+  sortable.destroy();
+  itemsContainer.querySelectorAll(':scope > div').forEach(e => e.remove());
+  getData().then(render).then(swappable).then(extractSortable);
+  
+  let container = document.querySelector('.items-container');
+  console.log (sortable.getDraggableElementsForContainer(container) );
+//  sortable.removeContainer(container);
+//  sortable.addContainer(container);
 }
 //Order functions
 var getOrder = function() {
@@ -136,7 +185,7 @@ var reOrderThoughts = function(thoughts) {
     var db = firebase.database();
     db.ref(thought.id + '/order').set(String(order));
     listOfIds.push(thought.id);
-    console.log(listOfIds);
+//    console.log(listOfIds);
     order += 1;
     }
     else if (card.classList.contains('draggable-mirror') || listOfIds.includes(card.dataset.id)) {
@@ -151,7 +200,7 @@ var reOrderThoughts = function(thoughts) {
       var db = firebase.database();
       db.ref(thought.id + '/order').set(String(order));
       listOfIds.push(thought.id);
-      console.log(listOfIds);
+//      console.log(listOfIds);
       order += 1;
     }
   });
@@ -309,6 +358,11 @@ imgFilterButton.addEventListener('click', function() {
   renderFilter(event);
 });
 
+var videoFilterButton = document.querySelector('body > div.filter-wrapper > div > a:nth-child(4) > i');
+videoFilterButton.addEventListener('click', function() {
+  renderFilter(event);
+});
+
 var listFilterButton = document.querySelector('body > div.filter-wrapper > div > a:nth-child(5) > i');
 listFilterButton.addEventListener('click', function() {
   renderFilter(event);
@@ -329,7 +383,9 @@ addTextModal.addEventListener('click', function() {
   var divButtons = createButtons('text', divForm)
 
   divForm.appendChild(divButtons);
+  
   divModalContent.appendChild(divForm);
+  
 })
 
 //create object specifically for image items
