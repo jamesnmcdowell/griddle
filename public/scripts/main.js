@@ -751,15 +751,26 @@ var createVideoForm = function() {
   return divForm;
 }
 
+function parseYoutube (url) {
+  var regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  var match = url.match(regExp);
+  if (match && match[2].length == 11) {
+    return match[2];
+  } else {
+    console('failed to parse youtube video')
+  } 
+}
+
 let createVideoObj = function() {
   var videoForm = document.querySelector('form')
   var url = videoForm.videoUrl.value;
-  url += '?rel=0';
+  var filePath = parseYoutube(url);
+  var embedUrl = `https://www.youtube.com/embed/${filePath}?rel=0`
   var title = videoForm.addTitle.value;
   var videoObj = {
     type: 'video',
     title: title,
-    content: url,
+    content: embedUrl,
     order: getOrder(),
   }
   order += 1;
