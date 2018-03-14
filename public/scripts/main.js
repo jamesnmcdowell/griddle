@@ -246,6 +246,7 @@ var createTextForm = function() {
   textArea.setAttribute('name', 'addText');
   textArea.setAttribute('placeholder', 'Type some text...')
   textArea.className = 'text-form';
+  textArea.classList.add('materialize-textarea');
 
   var titleArea = createTitleInput()
 
@@ -408,7 +409,10 @@ var createAddBtn = function() {
   var submitButton = document.createElement('button');
   submitButton.id = 'add';
   submitButton.textContent = 'Add';
-  submitButton.className = 'cancel-submit-btn'
+  submitButton.className = 'cancel-submit-btn';
+  submitButton.classList.add("waves-light");
+  submitButton.classList.add('waves-effect');
+  submitButton.classList.add('btn');
   return submitButton;
 }
 
@@ -417,6 +421,10 @@ var createCancelBtn = function() {
   cancelButton.id = 'cancel';
   cancelButton.textContent = 'Cancel';
   cancelButton.className = 'cancel-submit-btn';
+  cancelButton.classList.add('waves-light');
+  cancelButton.classList.add('waves-light');
+  cancelButton.classList.add('waves-effect');
+  cancelButton.classList.add('btn');
   return cancelButton;
 }
 
@@ -594,6 +602,7 @@ var createSpeechForm = function() {
   textArea.setAttribute('name', 'addText');
   textArea.setAttribute('placeholder', 'Say something...')
   textArea.className = 'speech-form';
+  textArea.classList.add('materialize-textarea');
 
   var titleArea = createTitleInput()
 
