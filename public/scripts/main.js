@@ -1,19 +1,12 @@
 let itemsContainer = document.querySelector('.items-container');
 var displayedThoughts = []; // Global Var 1
 var order = 0 // Global Var 2
-let secondTime = false;
-let sortable;
-
-let extractSortable = function(data) {
-  sortable = data;
-  
-}
-
+ 
 document.addEventListener('DOMContentLoaded', function (event) {
   //materialize modal setup
   $('.modal').modal();
   //get data from firebase and render on page
-  getData().then(render).then(swappable).then(extractSortable);
+  getData().then(render).then(swappable);
   // The Firebase SDK is initialized and available here!
   //
 
@@ -35,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 let swappable = function() {
   
   var container, options, sortable;
-  container = document.querySelectorAll('.items-container');
+  container = document.querySelector('.items-container');
   options = {
     draggable: '.card',
     constrainDimensions: 'true',
@@ -55,28 +48,10 @@ let swappable = function() {
   })
   .on('drag:stop',  function() {} )
   .on('sortable:stop', function(event) {
-    console.log("sorted stop");
-    reOrderThoughts(document.querySelectorAll('.card'))
-  });
-  
-//  if (secondTime === true ) {
-//   sortable.destroy(); 
-//  }
-//  sortable = new Draggable.Sortable(container, options)
-//  .on('drag:start', function(event) {
-//    event.data.mirror.style.width = `${event.data.source.offsetWidth}px`;
-//    event.data.mirror.style.height = `${event.data.source.offsetHeight}px`;
-//  })
-//  .on('drag:move', function(event) {
-//  })
-//  .on('drag:stop',  function() {} )
-//  .on('sortable:stop', function(event) {
 //    console.log("sorted stop");
 //    reOrderThoughts(document.querySelectorAll('.card'))
-//  });
-//  
-  return sortable;
-  
+  });
+
 };
 
 //read data to firebase
@@ -147,22 +122,15 @@ var filter = function(object, type, filterThoughts) {
 }
 
 //dummy function for testing promises
-function testfunc(data) {
+let testfunc = function (data) {
   console.log('you added something!');
-//  var cardObj = load(data);
-//  placeFirst(cardObj.card);
+  var cardObj = load(data);
+  placeFirst(cardObj.card);
+  
   deleteDivForm();
   closeModal.click();
-  
-  sortable.destroy();
-  itemsContainer.querySelectorAll(':scope > div').forEach(e => e.remove());
-  getData().then(render).then(swappable).then(extractSortable);
-  
-  let container = document.querySelector('.items-container');
-  console.log (sortable.getDraggableElementsForContainer(container) );
-//  sortable.removeContainer(container);
-//  sortable.addContainer(container);
 }
+
 //Order functions
 var getOrder = function() {
   var order = displayedThoughts.length;
