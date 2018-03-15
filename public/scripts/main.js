@@ -514,7 +514,11 @@ var createSpeechForm = function() {
   var progressBar = createProgressBar();
   speechDiv.appendChild(progressBar);
   speechDiv.appendChild(textArea);
-  return speechDiv;
+  let speechObj = {
+    divForm: speechDiv,
+    textArea: textArea,
+  };
+  return speechObj; 
 };
 
 var createProgressBar = function() {
@@ -531,8 +535,8 @@ var createProgressBar = function() {
 var speechModal = document.querySelector('#speech');
 
 speechModal.addEventListener('click', function() {
-  var speechElem = createSpeechForm();
-  var divFormObj = createFormTemplate(speechElem);
+  var speechObj = createSpeechForm();
+  var divFormObj = createFormTemplate(speechObj.divForm);
   var objType = 'text';
   divFormObj.buttonAdd.textContent = 'End';
   
@@ -552,14 +556,14 @@ speechModal.addEventListener('click', function() {
   var commands = {
     'end': function() {
       annyang.abort();
-      addButton.click();
+      divFormObj.buttonAdd.click();
     },
     'cancel': function() {
       annyang.abort();
       deleteDivForm();
     },
     'start over': function() {
-      speechTextArea.textContent = '';
+      speechObj.textArea.textContent = '';
     }
   }
   annyang.start()
@@ -567,7 +571,7 @@ speechModal.addEventListener('click', function() {
 
   annyang.addCallback('result', function(phrases) {
     if (phrases[0] !== ' and' && phrases[0] !== ' end') {
-      speechTextArea.textContent += phrases[0];
+      speechObj.textArea.textContent += phrases[0];
     }
   })
 });
