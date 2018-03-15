@@ -37,7 +37,6 @@ let getData = function() {
     }
 //      orderThoughts(firebaseArr);
     displayedThoughts = firebaseArr.slice();
-    console.log(displayedThoughts);
 //    order = getOrder();
     return firebaseArr;
   })
@@ -69,7 +68,6 @@ let render = function(itemObj) {
   itemsContainer.insertBefore(cardObj.card, itemsContainer.childNodes[0]);
 //  itemsContainer.appendChild(cardObj.card);
   return cardObj;
-    
 };
 
 //write data to firebase
@@ -95,12 +93,7 @@ let draggable = function() {
   container = document.querySelector('.items-container');
   options = {
     draggable: '.card',
-    constrainDimensions: 'true',
-//    swapAnimation: {
-//      duration: 800,
-//      easingFunction: 'ease-in-out',
-//    },
-//    plugins: [Plugins.SwapAnimation],
+    constrainDimensions: 'true'
   };
   sortable = new Draggable.Sortable(container, options)
   .on('drag:start', function(event) {
@@ -281,7 +274,6 @@ let defineObjType = function(objType) {
     }
     return someObj;
 };
-
 
 ///#####################
 
@@ -748,17 +740,23 @@ var deleteDivForm = function() {
 
 ////////////////
 
-//var filter = function(object, type, filterThoughts) {
-//  if (object.type === type) {
-//    filterThoughts.push(object);
-//  }
-//}
+
+
+
+
+
 
 //Order functions
-var getOrder = function() {
-  var order = displayedThoughts.length;
-  return order;
-}
+//var getOrder = function() {
+//  var order = displayedThoughts.length;
+//  return order;
+//};
+//var orderThoughts = function(thoughts) {
+//  thoughts.sort(function(a, b){
+//    // console.log(a.order);
+//    return a.order-b.order
+//  })
+//};
 
 var reOrderThoughts = function(thoughts) {
   var order = 0
@@ -795,29 +793,33 @@ var reOrderThoughts = function(thoughts) {
       order += 1;
     }
   });
-}
+};
 
-//var orderThoughts = function(thoughts) {
-//  thoughts.sort(function(a, b){
-//    // console.log(a.order);
-//    return a.order-b.order
-//  })
-//}
 
 var renderFilter = function(event) {
   var filterThoughts = [];
   var type = event.target.getAttribute('data-filter-type');
   if (type === 'reset') {
     itemsContainer.querySelectorAll(':scope > div').forEach(e => e.remove());
-    render(displayedThoughts);
+    for (itemObj of displayedThoughts) {
+      render(itemObj);
+    }
   } else {
-      displayedThoughts.forEach(function(element) {
-      filter(element, type, filterThoughts);
-    })
-    itemsContainer.querySelectorAll(':scope > div').forEach(e => e.remove());
-    render(filterThoughts.reverse());
+      for (itemObj of displayedThoughts) {
+          filter(itemObj, type, filterThoughts);
+      }
+      itemsContainer.querySelectorAll(':scope > div').forEach(e => e.remove());
+      for (itemObj of filterThoughts) {
+        render(itemObj);
+      }
   }
-}
+};
+
+var filter = function(object, type, filterThoughts) {
+  if (object.type === type) {
+    filterThoughts.push(object);
+  }
+};
 
 //Selectors for filters
 var textFilterButton = document.querySelector('body > div.filter-wrapper > div > a:nth-child(2) > i');
