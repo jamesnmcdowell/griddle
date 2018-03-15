@@ -408,7 +408,7 @@ addImageModal.addEventListener('click', function() {
 
 var createListObj = function() {
   var arrDOMElements = document.querySelectorAll('input.bullet-point');
-  var titleInput = document.querySelector('div.list-form>input');
+  var titleInput = document.querySelector('.div-form .title-input');
   var listContents = [];
   for (var i = 0; i < arrDOMElements.length; i ++) {
     listContents.push(arrDOMElements[i].value)
@@ -445,15 +445,20 @@ var createListForm = function() {
   var ul = document.createElement('ul')
   ul.className = 'bulletpoints';
   appendInputLi(ul);
-  return divForm;  
+  divForm.appendChild(ul);
+  let divFormObj = {
+    divForm: divForm,
+    ul: ul,
+  };
+  return divFormObj;  
 };
 
 //##### ADD LIST MODAL #################################
 var addListModal = document.querySelector('#add-list');
 
 addListModal.addEventListener('click', function() {
-  var listElem = createListForm();
-  var divFormObj = createFormTemplate(listElem);
+  var listFormObj = createListForm();
+  var divFormObj = createFormTemplate(listFormObj.divForm);
   var objType = 'list';
   divModalContainer.appendChild(divFormObj.divForm);
   
@@ -468,13 +473,13 @@ addListModal.addEventListener('click', function() {
     deleteDivForm();
   })
   
-    listElem.addEventListener('keydown', function(e) {
+    listFormObj.divForm.addEventListener('keydown', function(e) {
     if(e.keyCode === 13 && e.target.className === 'title-input') {
       bullet.focus();
     }
     if(e.keyCode === 13 && e.target.className === 'bullet-point') {
       e.preventDefault();
-      appendInputLi(ul);
+      appendInputLi(listFormObj.ul);
     }
   })
   
