@@ -5,16 +5,10 @@ var order = 0 // Global Var 2
 document.addEventListener('DOMContentLoaded', function (event) {
   //materialize modal setup
   $('.modal').modal();
-  //get data from firebase and render on page
-  getData().then(render).then(swappable);
-  // The Firebase SDK is initialized and available here!
-  //
-
-//   firebase.auth().onAuthStateChanged(user => { });
-   firebase.database().ref('/path/to/ref').on('value', snapshot => { });
+  //firebase 
+  firebase.database().ref('/path/to/ref').on('value', snapshot => { });
 //   firebase.messaging().requestPermission().then(() => { });
 //   firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-
   try {
     let app = firebase.app();
     let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
@@ -23,36 +17,13 @@ document.addEventListener('DOMContentLoaded', function (event) {
     console.error(e);
     console.log('Error loading the Firebase SDK, check the console.');
   }
+  //get data from firebase, render on page, and initiate draggable
+  getData().then( (firebaseArr) => {
+    for (itemObj of firebaseArr) {
+      render(itemObj);
+    }
+  }).then(draggable);
 });
-//draggable JS library
-let swappable = function() {
-  
-  var container, options, sortable;
-  container = document.querySelector('.items-container');
-  options = {
-    draggable: '.card',
-    constrainDimensions: 'true',
-//    swapAnimation: {
-//      duration: 800,
-//      easingFunction: 'ease-in-out',
-//    },
-//    plugins: [Plugins.SwapAnimation],
-  };
-  
-  sortable = new Draggable.Sortable(container, options)
-  .on('drag:start', function(event) {
-    event.data.mirror.style.width = `${event.data.source.offsetWidth}px`;
-    event.data.mirror.style.height = `${event.data.source.offsetHeight}px`;
-  })
-  .on('drag:move', function(event) {
-  })
-  .on('drag:stop',  function() {} )
-  .on('sortable:stop', function(event) {
-//    console.log("sorted stop");
-//    reOrderThoughts(document.querySelectorAll('.card'))
-  });
-
-};
 
 //read data to firebase
 let getData = function() {
@@ -61,35 +32,18 @@ let getData = function() {
   return firebaseRef.once('value').then(function(snapshot) {
     let firebaseObj = snapshot.val();
     for (key in firebaseObj) {
-//      firebaseObj[key]["id"] = key;
       firebaseArr.push(firebaseObj[key]);
     }
-    orderThoughts(firebaseArr);
+//      orderThoughts(firebaseArr);
     displayedThoughts = firebaseArr.slice();
-    order = getOrder()
+    console.log(displayedThoughts);
+//    order = getOrder();
     return firebaseArr;
   })
 };
 
-//write data to firebase
-let writeData = function(testObj) {
-  let x = firebase.database().ref().push();
-  let id = x.getKey();
-  let setObj = {
-    id: id,
-    title: testObj.title,
-    content: testObj.content,
-    type: testObj.type,
-    order: testObj.order,
-  };
-  let promise = x.set(setObj).then(function() {
-    return setObj;
-  });
-  return promise;
-};
-
 //return cardObj with correct type
-let load = function(itemObj) {
+let defineCardType = function(itemObj) {
   let itemDiv;
   if (itemObj.type === "text") {
     itemDiv = createTextElements(itemObj);
@@ -103,87 +57,73 @@ let load = function(itemObj) {
   else if (itemObj.type === 'video') {
     itemDiv = createVideoElements(itemObj);
   }
-  let cardObj = createCard(itemObj, itemDiv);
-  return cardObj;
+  //creates specific card element type
+  let cardElem = createCard(itemObj, itemDiv);
+  return cardElem;
 };
 
 //render an array of objects
-let render = function(itemsArr) {
-  itemsArr.forEach( function(itemObj, i) {
-    let cardObj = load(itemObj);
-    itemsContainer.appendChild(cardObj.card);
-  })
+let render = function(itemObj) {
+  let cardObj = defineCardType(itemObj);
+  itemsContainer.insertBefore(cardObj.card, itemsContainer.childNodes[0]);
+//  itemsContainer.appendChild(cardObj.card);
+  return cardObj;
+    
 };
 
-var filter = function(object, type, filterThoughts) {
-  if (object.type === type) {
-    filterThoughts.push(object);
-  }
-}
+//write data to firebase
+let writeData = function(itemObj) {
+  let idGenerate = firebase.database().ref().push();
+  let id = idGenerate.getKey();
+  let setObj = {
+    id: id,
+    title: itemObj.title,
+    content: itemObj.content,
+    type: itemObj.type,
+    order: itemObj.order,
+  };
+  let promise = idGenerate.set(setObj).then(function() {
+    return setObj;
+  });
+  return promise;
+};
+
+//draggable JS library
+let draggable = function() {
+  var container, options, sortable;
+  container = document.querySelector('.items-container');
+  options = {
+    draggable: '.card',
+    constrainDimensions: 'true',
+//    swapAnimation: {
+//      duration: 800,
+//      easingFunction: 'ease-in-out',
+//    },
+//    plugins: [Plugins.SwapAnimation],
+  };
+  sortable = new Draggable.Sortable(container, options)
+  .on('drag:start', function(event) {
+    event.data.mirror.style.width = `${event.data.source.offsetWidth}px`;
+    event.data.mirror.style.height = `${event.data.source.offsetHeight}px`;
+  })
+  .on('sortable:stop', function(event) {
+//    reOrderThoughts(document.querySelectorAll('.card'))
+  });
+};
 
 //dummy function for testing promises
-let testfunc = function (data) {
+let testfunc = function (cardObj) {
   console.log('you added something!');
-  var cardObj = load(data);
-  placeFirst(cardObj.card);
-  
+  render(cardObj);
+
   deleteDivForm();
   closeModal.click();
-}
-
-//Order functions
-var getOrder = function() {
-  var order = displayedThoughts.length;
-  return order;
-}
-
-var reOrderThoughts = function(thoughts) {
-  var order = 0
-  var listOfIds = []
-  var cards = document.querySelectorAll('.card');
-  cards.forEach(function(card) {
-    console.log(card);
-    if (card.hasAttribute('aria-grabbed')) {
-      var thought = displayedThoughts.find(function(thought) {
-      return card.dataset.id === thought.id;
-      })
-    // console.log(thought.order);
-    thought.order = order;
-    //Updating Order in Firebase
-    var db = firebase.database();
-    db.ref(thought.id + '/order').set(String(order));
-    listOfIds.push(thought.id);
-//    console.log(listOfIds);
-    order += 1;
-    }
-    else if (card.classList.contains('draggable-mirror') || listOfIds.includes(card.dataset.id)) {
-      console.log('mirror card');
-    } else {
-        var thought = displayedThoughts.find(function(thought) {
-        return card.dataset.id === thought.id;
-        })
-      // console.log(thought.order);
-      thought.order = order;
-      //Updating Order in Firebase
-      var db = firebase.database();
-      db.ref(thought.id + '/order').set(String(order));
-      listOfIds.push(thought.id);
-//      console.log(listOfIds);
-      order += 1;
-    }
-  });
 }
 
 var addDataIdAttribute = function(card, object) {
   card.setAttribute('data-id', object.id );
 }
 
-var orderThoughts = function(thoughts) {
-  thoughts.sort(function(a, b){
-    // console.log(a.order);
-    return a.order-b.order
-  })
-}
 
 
 //########################
@@ -815,3 +755,76 @@ let createVideoElements = function(videoObj) {
   containerDiv.appendChild(iframe);
   return containerDiv;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+////////////////
+
+
+//var filter = function(object, type, filterThoughts) {
+//  if (object.type === type) {
+//    filterThoughts.push(object);
+//  }
+//}
+
+
+//Order functions
+var getOrder = function() {
+  var order = displayedThoughts.length;
+  return order;
+}
+
+var reOrderThoughts = function(thoughts) {
+  var order = 0
+  var listOfIds = []
+  var cards = document.querySelectorAll('.card');
+  cards.forEach(function(card) {
+    console.log(card);
+    if (card.hasAttribute('aria-grabbed')) {
+      var thought = displayedThoughts.find(function(thought) {
+      return card.dataset.id === thought.id;
+      })
+    // console.log(thought.order);
+    thought.order = order;
+    //Updating Order in Firebase
+    var db = firebase.database();
+    db.ref(thought.id + '/order').set(String(order));
+    listOfIds.push(thought.id);
+//    console.log(listOfIds);
+    order += 1;
+    }
+    else if (card.classList.contains('draggable-mirror') || listOfIds.includes(card.dataset.id)) {
+      console.log('mirror card');
+    } else {
+        var thought = displayedThoughts.find(function(thought) {
+        return card.dataset.id === thought.id;
+        })
+      // console.log(thought.order);
+      thought.order = order;
+      //Updating Order in Firebase
+      var db = firebase.database();
+      db.ref(thought.id + '/order').set(String(order));
+      listOfIds.push(thought.id);
+//      console.log(listOfIds);
+      order += 1;
+    }
+  });
+}
+
+//var orderThoughts = function(thoughts) {
+//  thoughts.sort(function(a, b){
+//    // console.log(a.order);
+//    return a.order-b.order
+//  })
+//}
