@@ -5,6 +5,7 @@ var order = 0 // Global Var 2
 document.addEventListener('DOMContentLoaded', function (event) {
   //materialize modal setup
   $('.modal').modal();
+  $('select').material_select();
   //firebase 
   firebase.database().ref('/path/to/ref').on('value', snapshot => { });
 //   firebase.messaging().requestPermission().then(() => { });
@@ -46,7 +47,7 @@ let getData = function() {
 let defineCardType = function(itemObj) {
   let itemDiv;
   if (itemObj.type === "text") {
-    itemDiv = createTextElements(itemObj);
+    itemDiv = createTextCardElem(itemObj);
   }
   else if (itemObj.type === "image") {
     itemDiv = createImgElements(itemObj);
@@ -111,20 +112,9 @@ let draggable = function() {
   });
 };
 
-//dummy function for testing promises
-let testfunc = function (cardObj) {
-  console.log('you added something!');
-  render(cardObj);
-
-  deleteDivForm();
-  closeModal.click();
-}
-
 var addDataIdAttribute = function(card, object) {
   card.setAttribute('data-id', object.id );
 }
-
-
 
 //########################
 var createElementWithClasses = function(element, classArray) {
@@ -143,6 +133,7 @@ let createCard = function(itemObj, itemElem) {
   let cardTitle = createElementWithClasses('span', ['card-title']);
   let cardActionDiv = createElementWithClasses('div', ['card-action']);
   addDataIdAttribute(cardWrapperDiv, itemObj);
+  
   let cardAction1 = document.createElement('a');
   let cardAction2 = document.createElement('a');
   let cardAction3 = document.createElement('a');
@@ -159,13 +150,9 @@ let createCard = function(itemObj, itemElem) {
   cardTitle.textContent = itemObj.title;
   cardContentDiv.appendChild(itemElem);
   cardAction1.textContent = `Edit`;
-  // cardAction1.setAttribute('href', '#modal1');
-  // cardAction1.className = 'modal-trigger'
   cardAction2.textContent = "Tweet";
   cardAction3.textContent = "Delete";
   cardAction4.textContent = 'FBpost'
-  cardAction2.addEventListener('click', tweet);
-
   let cardObj = {
     card: cardWrapperDiv,
     cta1: cardAction1,
@@ -177,45 +164,120 @@ let createCard = function(itemObj, itemElem) {
   cardObj.cta1.addEventListener('click', function(e) {
     editData(itemObj, cardObj);
   });
+  
+  cardAction2.addEventListener('click', function(e) {
+    if (itemObj.type === 'text') tweet(e);
+    else Materialize.toast('Sorry, can only post text', 2000);
+  });
 
-  cardObj.cta3.addEventListener('mousedown', function(event) {
-    event.preventDefault();
+  cardObj.cta3.addEventListener('click', function(e) {
     deleteData(itemObj.id);
     cardObj.card.remove();
   });
 
-  cardObj.cta4.addEventListener('click', function(event) {
-    if (itemObj.type === 'text') {
-      postOnFB(itemObj.content, event);
-    }
-  })
+  cardObj.cta4.addEventListener('click', function(e) {
+    if (itemObj.type === 'text') postOnFB(itemObj.content, event);
+    else Materialize.toast('Sorry, can only post text', 2000); 
+  });
 
   return cardObj;
 };
 
-///#####################
+//######### Reusable Form Elements ########################
 
-//create text form
-var createTextForm = function() {
-  var divForm = document.createElement('div');
-  divForm.className = 'div-form';
-  var textForm = document.createElement('form');
+var createTitleInput = function() {
+  var titleInput = document.createElement('input');
+  titleInput.setAttribute('name', 'addTitle');
+  titleInput.setAttribute('placeholder', 'Add title...');
+  titleInput.className = 'title-input';
+  return titleInput;
+};
 
+let createTextArea = function() {
   var textArea = document.createElement('textarea');
   textArea.setAttribute('id', 'text-form');
   textArea.setAttribute('name', 'addText');
   textArea.setAttribute('placeholder', 'Type some text...')
-  textArea.className = 'text-form';
-  textArea.classList.add('materialize-textarea');
+  textArea.classList.add('text-form', 'materialize-textarea');
+  return textArea;
+};
 
-  var titleArea = createTitleInput()
+var createAddBtn = function() {
+  var submitButton = document.createElement('button');
+  submitButton.id = 'add';
+  submitButton.textContent = 'Add';
+  submitButton.classList.add('cancel-submit-btn','waves-light','waves-effect','btn');
+  return submitButton;
+};
 
-  textForm.appendChild(titleArea);
-  textForm.appendChild(textArea);
-  divForm.appendChild(textForm);
+var createCancelBtn = function() {
+  var cancelButton = document.createElement('button');
+  cancelButton.id = 'cancel';
+  cancelButton.textContent = 'Cancel';
+  cancelButton.classList.add('cancel-submit-btn','waves-light','waves-effect','btn');
+  return cancelButton;
+};
 
-  return divForm;
+var createFormTemplate = function(formElem) {
+  var divForm = document.createElement('div');
+  divForm.className = 'div-form';
+  var form = document.createElement('form');
+  var titleInput = createTitleInput();
+  
+  form.appendChild(titleInput);
+  form.appendChild(formElem);
+  let btnObj = createBtnDiv();
+  form.appendChild(btnObj.divButtons);
+  divForm.appendChild(form);
+  let divFormObj = {divForm: divForm, 
+                    buttonAdd: btnObj.buttonAdd, 
+                    buttonCancel: btnObj.buttonCancel  
+                   };
+  return divFormObj;
+};
+
+let createBtnDiv = function() {
+  var divButtons = document.createElement('div');
+  divButtons.className = 'buttons';
+  var buttonAdd = createAddBtn();
+  var buttonCancel = createCancelBtn();
+  divButtons.appendChild(buttonAdd);
+  divButtons.appendChild(buttonCancel);
+  let btnObj = {divButtons: divButtons, 
+                buttonAdd: buttonAdd, 
+                buttonCancel: buttonCancel 
+               };
+  return btnObj;
 }
+
+let defineObjType = function(objType) {
+    var someObj;
+    if (objType === 'text') {
+      someObj = createTextObj();
+    } else
+    if (objType === 'list') {
+      someObj = createListObj();
+    } else
+    if (objType === 'image') {
+      someObj = createImgObj();
+    } else
+    if (objType === 'video') {
+      someObj = createVideoObj();
+    } else {
+      console.log('check object type!! createButtons function')
+    }
+    return someObj;
+};
+
+
+///#####################
+
+//create text form
+var createTextForm = function() { 
+  let elem = createTextArea(); 
+  return elem;  
+};
+
 //create object specifically for text items
 let createTextObj = function() {
   var textForm = document.querySelector('form')
@@ -227,13 +289,13 @@ let createTextObj = function() {
     content: text,
     order: getOrder(),
   }
-  order += 1;
-  displayedThoughts.push(textObj);
+//  order += 1;
+//  displayedThoughts.push(textObj);
   return textObj;
 }
 
 //create element specifically for text items
-let createTextElements = function(textObj) {
+let createTextCardElem = function(textObj) {
   var containerDiv = document.createElement('div');
   var p = document.createElement('p');
   p.textContent = textObj.content;
@@ -241,60 +303,42 @@ let createTextElements = function(textObj) {
   return containerDiv;
 }
 
-var renderFilter = function(event) {
-  var filterThoughts = [];
-  var type = event.target.getAttribute('data-filter-type');
-  if (type === 'reset') {
-    itemsContainer.querySelectorAll(':scope > div').forEach(e => e.remove());
-    render(displayedThoughts);
-  } else {
-      displayedThoughts.forEach(function(element) {
-      filter(element, type, filterThoughts);
-    })
-    itemsContainer.querySelectorAll(':scope > div').forEach(e => e.remove());
-    render(filterThoughts.reverse());
-  }
-}
-
-//Selectors for filters
-var textFilterButton = document.querySelector('body > div.filter-wrapper > div > a:nth-child(2) > i');
-textFilterButton.addEventListener('click', function() {
-  renderFilter(event);
-});
-var imgFilterButton = document.querySelector('body > div.filter-wrapper > div > a:nth-child(3) > i');
-imgFilterButton.addEventListener('click', function() {
-  renderFilter(event);
-});
-
-var videoFilterButton = document.querySelector('body > div.filter-wrapper > div > a:nth-child(4) > i');
-videoFilterButton.addEventListener('click', function() {
-  renderFilter(event);
-});
-
-var listFilterButton = document.querySelector('body > div.filter-wrapper > div > a:nth-child(5) > i');
-listFilterButton.addEventListener('click', function() {
-  renderFilter(event);
-});
-var restoreFilterButton = document.querySelector('body > div.filter-wrapper > div > a:nth-child(6) > i');
-restoreFilterButton.addEventListener('click', function() {
-  renderFilter(event);
-});
-
 
 var addTextModal = document.querySelector('#add-text');
 
 //########### ADD TEXT MODAL ######################
 
 addTextModal.addEventListener('click', function() {
-
-  var divForm = createTextForm();
-  var divButtons = createButtons('text', divForm)
-
-  divForm.appendChild(divButtons);
+  var textElem = createTextForm();
+  var divFormObj = createFormTemplate(textElem);
+  var objType = 'text';
+  divModalContainer.appendChild(divFormObj.divForm);
   
-  divModalContent.appendChild(divForm);
+  divFormObj.buttonAdd.addEventListener('click', function() {
+    let definedObj = defineObjType(objType);
+    writeData(definedObj).then(render);
+    deleteDivForm();
+    closeModal.click();
+  })
   
-})
+  divFormObj.buttonCancel.addEventListener('click', function(){
+    deleteDivForm();
+  })
+  
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //create object specifically for image items
 let createImgObj = function() {
@@ -324,7 +368,7 @@ let createImgElements = function(imgObj) {
   return containerDiv;
 }
 
-var divModalContent = document.querySelector('div.modal-content');
+var divModalContainer = document.querySelector('div.modal-content');
 var closeModal = document.querySelector('div.modal-footer>a')
 var addImageModal = document.querySelector('#add-image');
 
@@ -335,7 +379,7 @@ addImageModal.addEventListener('click', function() {
   var divForm = createImageForm();
   var divButtons = createButtons('image', divForm);
   divForm.appendChild(divButtons);
-  divModalContent.appendChild(divForm);
+  divModalContainer.appendChild(divForm);
 })
 
 var createImageForm = function() {
@@ -357,49 +401,6 @@ var createImageForm = function() {
   return divForm;
 }
 
-//######### SOME REUSED FUNCTIONS ########################
-
-var createTitleInput = function() {
-  var titleInput = document.createElement('input');
-  titleInput.setAttribute('name', 'addTitle');
-  titleInput.setAttribute('placeholder', 'Add title...');
-  titleInput.className = 'title-input';
-  return titleInput;
-}
-
-var deleteElement = function(element) {
-  element.outerHTML = "";
-  delete element;
-}
-
-var createAddBtn = function() {
-  var submitButton = document.createElement('button');
-  submitButton.id = 'add';
-  submitButton.textContent = 'Add';
-  submitButton.className = 'cancel-submit-btn';
-  submitButton.classList.add("waves-light");
-  submitButton.classList.add('waves-effect');
-  submitButton.classList.add('btn');
-  return submitButton;
-}
-
-var createCancelBtn = function() {
-  var cancelButton = document.createElement('button');
-  cancelButton.id = 'cancel';
-  cancelButton.textContent = 'Cancel';
-  cancelButton.className = 'cancel-submit-btn';
-  cancelButton.classList.add('waves-light');
-  cancelButton.classList.add('waves-light');
-  cancelButton.classList.add('waves-effect');
-  cancelButton.classList.add('btn');
-  return cancelButton;
-}
-
-
-var placeFirst = function(element) {
-  var firstCard = itemsContainer.querySelector('div')
-  itemsContainer.insertBefore(element, firstCard)
-}
 
 //##### ADD LIST MODAL #################################
 
@@ -423,7 +424,7 @@ addListModal.addEventListener('click', function() {
   var divButtons = createButtons('list', divWrapper);
   divWrapper.appendChild(divForm);
   divWrapper.appendChild(divButtons);
-  divModalContent.appendChild(divWrapper);
+  divModalContainer.appendChild(divWrapper);
 
 
   divForm.addEventListener('keydown', function(e) {
@@ -487,43 +488,6 @@ var createListObj = function() {
   return listObj;
 }
 
-var createButtons = function(objType, divToDelete ) {
-
-  var divButtons = document.createElement('div');
-  divButtons.className = 'buttons';
-  var buttonAdd = createAddBtn();
-  var buttonCancel = createCancelBtn();
-  divButtons.appendChild(buttonAdd);
-  divButtons.appendChild(buttonCancel);
-
-  buttonAdd.addEventListener('click', function() {
-    var someObj;
-    if (objType === 'text') {
-      someObj = createTextObj();
-    } else
-    if (objType === 'list') {
-      someObj = createListObj();
-    } else
-    if (objType === 'image') {
-      someObj = createImgObj();
-    } else
-    if (objType === 'video') {
-      someObj = createVideoObj();
-    } else {
-      console.log('check object type!! createButtons function')
-      return
-    }
-
-    writeData(someObj).then(testfunc);
-
-  })
-
-  buttonCancel.addEventListener('click', function(){
-    deleteDivForm();
-  })
-  return divButtons;
-}
-
 //##################### SPEECH TO TEXT MODAL #######################
 
 var speechModal = document.querySelector('#speech');
@@ -533,7 +497,7 @@ speechModal.addEventListener('click', function() {
   var divButtons = createButtons('text', divForm)
 
   divForm.appendChild(divButtons);
-  divModalContent.appendChild(divForm);
+  divModalContainer.appendChild(divForm);
 
   var speechTextArea = divForm.querySelector('textarea');
   var addButton = divButtons.querySelector('button');
@@ -692,7 +656,7 @@ addVideoModal.addEventListener('click', function() {
   var divForm = createVideoForm();
   var divButtons = createButtons('video', divForm);
   divForm.appendChild(divButtons);
-  divModalContent.appendChild(divForm);
+  divModalContainer.appendChild(divForm);
 })
 
 
@@ -828,3 +792,49 @@ var reOrderThoughts = function(thoughts) {
 //    return a.order-b.order
 //  })
 //}
+
+
+
+
+
+
+
+var renderFilter = function(event) {
+  var filterThoughts = [];
+  var type = event.target.getAttribute('data-filter-type');
+  if (type === 'reset') {
+    itemsContainer.querySelectorAll(':scope > div').forEach(e => e.remove());
+    render(displayedThoughts);
+  } else {
+      displayedThoughts.forEach(function(element) {
+      filter(element, type, filterThoughts);
+    })
+    itemsContainer.querySelectorAll(':scope > div').forEach(e => e.remove());
+    render(filterThoughts.reverse());
+  }
+}
+
+//Selectors for filters
+var textFilterButton = document.querySelector('body > div.filter-wrapper > div > a:nth-child(2) > i');
+textFilterButton.addEventListener('click', function() {
+  renderFilter(event);
+});
+var imgFilterButton = document.querySelector('body > div.filter-wrapper > div > a:nth-child(3) > i');
+imgFilterButton.addEventListener('click', function() {
+  renderFilter(event);
+});
+
+var videoFilterButton = document.querySelector('body > div.filter-wrapper > div > a:nth-child(4) > i');
+videoFilterButton.addEventListener('click', function() {
+  renderFilter(event);
+});
+
+var listFilterButton = document.querySelector('body > div.filter-wrapper > div > a:nth-child(5) > i');
+listFilterButton.addEventListener('click', function() {
+  renderFilter(event);
+});
+var restoreFilterButton = document.querySelector('body > div.filter-wrapper > div > a:nth-child(6) > i');
+restoreFilterButton.addEventListener('click', function() {
+  renderFilter(event);
+});
+
