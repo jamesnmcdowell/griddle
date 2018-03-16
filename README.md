@@ -12,8 +12,8 @@
 - [Setup](#setup)
 - [Features](#features)
 - [Libraries/APIs](#external)
+- [Todos](#todos)
 - [Contributors](#contributors)
-- [FAQ](#faq)
 - [License](#license)
 
 ---
@@ -44,6 +44,15 @@
 * [Annyang Speech recognition](https://github.com/TalAter/annyang)
 * [Codebird (Twitter API)](https://github.com/jublonet/codebird-js)
 * [Facebook JS SDK](https://developers.facebook.com/docs/javascript)
+
+## Todos
+* Resizable cards with grid-auto-flow: dense;
+* Combine multiple elements from different card types into a single card
+* In-card editor
+* Improve UI and adding/editing card in mobile
+* Add sign in authentication
+* Fix bug that drags elemnts when clicking card action buttons
+* Upload local images
 
 ## Contributors
 
