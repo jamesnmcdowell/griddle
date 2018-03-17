@@ -1,6 +1,6 @@
 let itemsContainer = document.querySelector('.items-container');
 var displayedThoughts = []; // Global Var 1
-var order = 0 // Global Var 2
+var order = 0; // Global Var 2
  
 document.addEventListener('DOMContentLoaded', function (event) {
   //materialize modal setup
@@ -79,7 +79,7 @@ let writeData = function(itemObj) {
     title: itemObj.title,
     content: itemObj.content,
     type: itemObj.type,
-    order: itemObj.order,
+//    order: itemObj.order,
   };
   let promise = idGenerate.set(setObj).then(function() {
     return setObj;
@@ -286,7 +286,7 @@ let createTextObj = function() {
     type: 'text',
     title: title,
     content: text,
-    order: getOrder(),
+//    order: getOrder(),
   }
 //  order += 1;
 //  displayedThoughts.push(textObj);
@@ -347,7 +347,7 @@ let createImgObj = function() {
     type: 'image',
     title: title,
     content: url,
-    order: getOrder(),
+//    order: getOrder(),
   }
 //  order += 1;
 //  displayedThoughts.push(imgObj);
@@ -409,7 +409,7 @@ var createListObj = function() {
     type: "list",
     title: titleInput.value,
     content: listContents,
-    order: getOrder()
+//    order: getOrder()
   };
 //  order += 1;
 //  displayedThoughts.push(listObj);
@@ -580,7 +580,7 @@ let createVideoObj = function() {
     type: 'video',
     title: title,
     content: embedUrl,
-    order: getOrder(),
+//    order: getOrder(),
   }
 //  order += 1;
 //  displayedThoughts.push(videoObj);
@@ -739,9 +739,6 @@ var deleteDivForm = function() {
 };
 
 ////////////////
-
-
-
 
 
 
