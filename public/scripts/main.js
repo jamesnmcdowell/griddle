@@ -1,6 +1,6 @@
 let itemsContainer = document.querySelector('.items-container');
 var displayedThoughts = []; // Global Var 1
-var order = 0 // Global Var 2
+var order = 0; // Global Var 2
  
 document.addEventListener('DOMContentLoaded', function (event) {
   //materialize modal setup
@@ -37,7 +37,6 @@ let getData = function() {
     }
 //      orderThoughts(firebaseArr);
     displayedThoughts = firebaseArr.slice();
-    console.log(displayedThoughts);
 //    order = getOrder();
     return firebaseArr;
   })
@@ -69,7 +68,6 @@ let render = function(itemObj) {
   itemsContainer.insertBefore(cardObj.card, itemsContainer.childNodes[0]);
 //  itemsContainer.appendChild(cardObj.card);
   return cardObj;
-    
 };
 
 //write data to firebase
@@ -81,7 +79,7 @@ let writeData = function(itemObj) {
     title: itemObj.title,
     content: itemObj.content,
     type: itemObj.type,
-    order: itemObj.order,
+//    order: itemObj.order,
   };
   let promise = idGenerate.set(setObj).then(function() {
     return setObj;
@@ -95,12 +93,7 @@ let draggable = function() {
   container = document.querySelector('.items-container');
   options = {
     draggable: '.card',
-    constrainDimensions: 'true',
-//    swapAnimation: {
-//      duration: 800,
-//      easingFunction: 'ease-in-out',
-//    },
-//    plugins: [Plugins.SwapAnimation],
+    constrainDimensions: 'true'
   };
   sortable = new Draggable.Sortable(container, options)
   .on('drag:start', function(event) {
@@ -282,7 +275,6 @@ let defineObjType = function(objType) {
     return someObj;
 };
 
-
 ///#####################
 
 //create object specifically for text items
@@ -294,7 +286,7 @@ let createTextObj = function() {
     type: 'text',
     title: title,
     content: text,
-    order: getOrder(),
+//    order: getOrder(),
   }
 //  order += 1;
 //  displayedThoughts.push(textObj);
@@ -355,7 +347,7 @@ let createImgObj = function() {
     type: 'image',
     title: title,
     content: url,
-    order: getOrder(),
+//    order: getOrder(),
   }
 //  order += 1;
 //  displayedThoughts.push(imgObj);
@@ -417,7 +409,7 @@ var createListObj = function() {
     type: "list",
     title: titleInput.value,
     content: listContents,
-    order: getOrder()
+//    order: getOrder()
   };
 //  order += 1;
 //  displayedThoughts.push(listObj);
@@ -514,7 +506,11 @@ var createSpeechForm = function() {
   var progressBar = createProgressBar();
   speechDiv.appendChild(progressBar);
   speechDiv.appendChild(textArea);
-  return speechDiv;
+  let speechObj = {
+    divForm: speechDiv,
+    textArea: textArea,
+  };
+  return speechObj; 
 };
 
 var createProgressBar = function() {
@@ -531,8 +527,8 @@ var createProgressBar = function() {
 var speechModal = document.querySelector('#speech');
 
 speechModal.addEventListener('click', function() {
-  var speechElem = createSpeechForm();
-  var divFormObj = createFormTemplate(speechElem);
+  var speechObj = createSpeechForm();
+  var divFormObj = createFormTemplate(speechObj.divForm);
   var objType = 'text';
   divFormObj.buttonAdd.textContent = 'End';
   
@@ -552,14 +548,14 @@ speechModal.addEventListener('click', function() {
   var commands = {
     'end': function() {
       annyang.abort();
-      addButton.click();
+      divFormObj.buttonAdd.click();
     },
     'cancel': function() {
       annyang.abort();
       deleteDivForm();
     },
     'start over': function() {
-      speechTextArea.textContent = '';
+      speechObj.textArea.textContent = '';
     }
   }
   annyang.start()
@@ -567,7 +563,7 @@ speechModal.addEventListener('click', function() {
 
   annyang.addCallback('result', function(phrases) {
     if (phrases[0] !== ' and' && phrases[0] !== ' end') {
-      speechTextArea.textContent += phrases[0];
+      speechObj.textArea.textContent += phrases[0];
     }
   })
 });
@@ -584,7 +580,7 @@ let createVideoObj = function() {
     type: 'video',
     title: title,
     content: embedUrl,
-    order: getOrder(),
+//    order: getOrder(),
   }
 //  order += 1;
 //  displayedThoughts.push(videoObj);
@@ -744,17 +740,20 @@ var deleteDivForm = function() {
 
 ////////////////
 
-//var filter = function(object, type, filterThoughts) {
-//  if (object.type === type) {
-//    filterThoughts.push(object);
-//  }
-//}
+
+
 
 //Order functions
-var getOrder = function() {
-  var order = displayedThoughts.length;
-  return order;
-}
+//var getOrder = function() {
+//  var order = displayedThoughts.length;
+//  return order;
+//};
+//var orderThoughts = function(thoughts) {
+//  thoughts.sort(function(a, b){
+//    // console.log(a.order);
+//    return a.order-b.order
+//  })
+//};
 
 var reOrderThoughts = function(thoughts) {
   var order = 0
@@ -791,29 +790,33 @@ var reOrderThoughts = function(thoughts) {
       order += 1;
     }
   });
-}
+};
 
-//var orderThoughts = function(thoughts) {
-//  thoughts.sort(function(a, b){
-//    // console.log(a.order);
-//    return a.order-b.order
-//  })
-//}
 
 var renderFilter = function(event) {
   var filterThoughts = [];
   var type = event.target.getAttribute('data-filter-type');
   if (type === 'reset') {
     itemsContainer.querySelectorAll(':scope > div').forEach(e => e.remove());
-    render(displayedThoughts);
+    for (itemObj of displayedThoughts) {
+      render(itemObj);
+    }
   } else {
-      displayedThoughts.forEach(function(element) {
-      filter(element, type, filterThoughts);
-    })
-    itemsContainer.querySelectorAll(':scope > div').forEach(e => e.remove());
-    render(filterThoughts.reverse());
+      for (itemObj of displayedThoughts) {
+          filter(itemObj, type, filterThoughts);
+      }
+      itemsContainer.querySelectorAll(':scope > div').forEach(e => e.remove());
+      for (itemObj of filterThoughts) {
+        render(itemObj);
+      }
   }
-}
+};
+
+var filter = function(object, type, filterThoughts) {
+  if (object.type === type) {
+    filterThoughts.push(object);
+  }
+};
 
 //Selectors for filters
 var textFilterButton = document.querySelector('body > div.filter-wrapper > div > a:nth-child(2) > i');

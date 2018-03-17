@@ -11,14 +11,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Griddle</title>
-  <!-- update the version number as needed -->
   <script defer src="/__/firebase/4.11.0/firebase-app.js"></script>
-  <!-- include only the Firebase features as you need -->
-<!--  <script defer src="/__/firebase/4.11.0/firebase-auth.js"></script>-->
   <script defer src="/__/firebase/4.11.0/firebase-database.js"></script>
-<!--  <script defer src="/__/firebase/4.11.0/firebase-messaging.js"></script>-->
-<!--  <script defer src="/__/firebase/4.11.0/firebase-storage.js"></script>-->
-  <!-- initialize the SDK after all desired features are loaded -->
   <script defer src="/__/firebase/init.js"></script>
 </head>
 <body>
@@ -28,7 +22,6 @@
       <img class="logo-img" src="assets/griddle-logo.svg"/>
       </a>
       <ul class="right">
-        <!--        <li><a href="#"><i class="material-icons">search</i></a></li>-->
         <li><a class="waves-effect waves-light modal-trigger" href="#modal1"><i class="material-icons">create</i></a></li>
       </ul>
     </div>
@@ -45,7 +38,6 @@
   </div>
   <div class="items-container">
   </div>
-
   <!-- Modal Trigger -->
   <!-- Modal Structure -->
   <div id="modal1" class="modal">
@@ -66,9 +58,10 @@
     </div>
   </div>
   </div>
+  
+  <!--scripts-->
   <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
   <script>
-    // Initialize Firebase
     var config = {
       apiKey: "AIzaSyB6wimYJ0e8J8DpwxA45dzxXEHgJ680icE",
       authDomain: "griddle-ec3d9.firebaseapp.com",
@@ -82,7 +75,6 @@
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/annyang/2.6.0/annyang.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@shopify/draggable@1.0.0-beta.5/lib/draggable.bundle.js"></script>
   <script src="scripts/tweet.js"></script>
   <script type="text/javascript" src="scripts/codebird.js"></script>
   <script type="text/javascript">
@@ -91,10 +83,8 @@
     cb.setToken('971787523369422851-OtonAuNiq5L7BOorx5ucoS536OYju44', 'vAnDFOrleJ1kpbe1oj7BoIMCeFniMzLJf84DVTrB1ClLr');
   </script>
   <script src="https://connect.facebook.net/en_US/sdk.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@shopify/draggable@1.0.0-beta.5/lib/plugins.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@shopify/draggable@1.0.0-beta.5/lib/plugins/swap-animation.js"></script>
-  <script src="scripts/main.js"></script>
   <script src="scripts/Facebook.js"></script>
-  
+  <script src="https://cdn.jsdelivr.net/npm/@shopify/draggable@1.0.0-beta.5/lib/draggable.bundle.js"></script>
+  <script src="scripts/main.js"></script>
 </body>
 </html>
