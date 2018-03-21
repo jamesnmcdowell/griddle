@@ -2,8 +2,9 @@
 
 > Griddle is a web application that provides a unified dashboard of text, images, and videos that encourages people to thoughtfully consider and develop their ideas before posting anything on social media.
 
+[View Demo](https://griddle-ec3d9.firebaseapp.com/)
 <br>
-
+<br>
 [![griddle-screenshot-desktop](https://user-images.githubusercontent.com/19500679/37472755-35022454-2843-11e8-8050-0cf940c2067e.png)]()
 
 ---
