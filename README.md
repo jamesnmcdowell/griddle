@@ -62,9 +62,6 @@
 | [![](https://avatars2.githubusercontent.com/u/19500679?&s=300)](https://github.com/jamesnmcdowell)    | [![](https://avatars3.githubusercontent.com/u/20142674?&s=300)](https://github.com/rcackerley) | [![FVCproductions](https://avatars1.githubusercontent.com/u/34459770?=&s=300)](https://github.com/illiaChaban)  |
 | <a href="https://github.com/jamesnmcdowell" target="_blank">`github.com/jamesnmcdowell`</a> | <a href="https://github.com/rcackerley" target="_blank">`github.com/rcackerley`</a> | <a href="https://github.com/illiaChaban" target="_blank">`github.com/illiaChaban`</a> |
 
-- You can just grab their GitHub profile image URL
-- You should probably resize their picture using `?s=200` at the end of the image URL.
-
 ---
 
 ## License
